@@ -1,0 +1,344 @@
+
+@font-face {
+    font-family: ChangaBold;
+    src: url(./../fonts/changa/Changa-Bold.ttf);
+  }
+  @font-face {
+    font-family: ChangaExtraBold;
+    src: url(./../fonts/changa/Changa-ExtraBold.ttf);
+  }
+  @font-face {
+    font-family: ChangaExtraLight;
+    src: url(./../fonts/changa/Changa-ExtraLight.ttf);
+  }
+  @font-face {
+    font-family: ChangaLight;
+    src: url(./../fonts/changa/Changa-Light.ttf);
+  }
+  @font-face {
+    font-family: ChangaMedium;
+    src: url(./../fonts/changa/Changa-Medium.ttf);
+  }
+  @font-face {
+    font-family: ChangaRegular;
+    src: url(./../fonts/changa/Changa-Regular.ttf);
+  }
+  body {
+    font-family: ChangaRegular;
+  }
+  .TopHeader, body {
+    margin-right: 0;
+    margin-left: 0;
+}
+  .login-page-new {
+    height: 100vh;
+  
+  }
+    .login-page-new .section-center-image {
+        background-color: #f0f9ff;
+    }
+  .login-page-new .login-page {
+    height: 100%;
+  
+  }
+  .login-page-new .login-page .grid-center-image {
+    height: 100%;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    gap: 20px;
+  }
+    .login-page-new .login-page .grid-center-image .brand-logo {
+        width: 100%;
+        text-align: center;
+    }
+  .login-page-new .login-page .grid-center-image .brand-logo img {
+    display: block;
+    margin: auto;
+    margin: 30px auto;
+  }
+  .login-page-new .login-page .grid-center-image h4{
+    color: #264653;
+    font-size: 26px;
+    font-weight: 600;
+  }
+  .login-page-new .login-page .grid-center-image h5{
+    color: #2C3E50;
+    font-size: 20px;
+  }
+  .login-page-new .login-page .grid-center-image h6{
+    color: #2C3E50;
+    font-size: 15px;
+  }
+  .login-page-new .login-page .grid-center-image .brand-logo img.logo-img{
+    width: 200px;
+    margin: 0px auto  30px;
+    position: relative;
+    top: -15px;
+  }
+  .login-page-new .login-account-form {
+    display: flex;
+      width: 100%;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+      background-color: #fff;
+      position: relative;
+  }
+  .login-page-new .login-account-form .grid-center {
+    width: 350px;
+    max-width: 95%;
+  }
+  .login-page-new .login-account-form .grid-center h5 {
+    color: #2C3E50;
+    font-size: 15px;
+    font-weight: 900;
+    margin-bottom: 15px;
+    text-align: center;
+    font-family: ChangaExtraBold;
+  }
+  .login-page-new .login-account-form .grid-center h6 {
+    margin-bottom: 100px;
+    text-align: center;
+    color: #A4AFB7;
+    font-size: 13px;
+    width: 265px;
+    max-width: 95%;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 20px;
+  }
+  .login-page-new .login-account-form .version {
+    position: absolute;
+    bottom: 15px;
+    right: 15px;
+    margin-bottom: 0;
+  }
+  .login-page-new .input-group{
+    margin-bottom: 30px;
+  }
+  .login-page-new .input-group .form-control {
+    height: 45px;
+    position: relative;
+    z-index: 1;
+    background-color: transparent;
+    box-shadow: none;
+    font-size: 15px;
+    padding: 10px 15px;
+    border: none !important;
+    border-bottom: 2px solid #ccc !important;
+  
+  }
+  .login-page-new .input-group .show-pass {
+    position: absolute;
+    left: 5px;
+    display: inline-block;
+    top: 10px;
+    cursor: pointer;
+    z-index: 9;
+  }
+  .login-page-new .input-group .show-pass img {
+    width: 19px;
+    cursor: pointer;
+  }
+  .login-page-new .input-group .form-control ~ label, .login-page-new .input-group .form-control ~ label {
+    font-size: 13px;
+    position: relative;
+    top: -23px;
+    padding: 0 10px;
+    display: inline;
+    background-color: #fff;
+    width: calc(100% - 20px);
+    margin: 0px 5px;
+    transition: all 0.3s;
+    line-height: 0px;
+    z-index: 0;
+  }
+  .login-page-new .input-group .form-control:focus ~ label,
+   .login-page-new .input-group input.form-control:not(:placeholder-shown) ~ label {
+    transition: all 0.3s;
+    top: -50px;
+    display: inline-block;
+    z-index: 2;
+   }
+   .login-page-new .input-group .form-control::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+    color: #999;
+    opacity: 0; /* Firefox */
+    font-size: 11px;
+  }
+  
+  .login-page-new .input-group .form-control:-ms-input-placeholder { /* Internet Explorer 10-11 */
+    color: #999;
+    opacity: 0;
+    font-size: 11px;
+  }
+  
+  .login-page-new .input-group .form-control::-ms-input-placeholder { /* Microsoft Edge */
+    color: #999;
+    opacity: 0;
+    font-size: 11px;
+  }
+  .login-page-new .input-group .form-control:focus::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+    opacity: 1; /* Firefox */
+  }
+  
+  .login-page-new .input-group .form-control:focus:-ms-input-placeholder { /* Internet Explorer 10-11 */
+    opacity: 1;
+  }
+  
+  .login-page-new .input-group .form-control:focus::-ms-input-placeholder { /* Microsoft Edge */
+    opacity: 1;
+  }
+  .login-page-new .input-group input:-webkit-autofill,
+  .login-page-new .input-group input:-webkit-autofill:hover,
+  .login-page-new .input-group input:-webkit-autofill:focus,
+  .login-page-new .input-group input:-webkit-autofill:active {
+      transition: background-color 5000s ease-in-out 0s;
+  }
+    .login-page-new .form-btn {
+        padding: 10px;
+        height: 50px;
+        border-radius: 5px !important;
+        background-color: #8c755d;
+        display: block;
+        width: 100%;
+        color: #fff;
+        margin: 50px 0px 5px;
+        position: relative;
+    }
+  .login-page-new .form-btn img {
+    position: absolute;
+    left: 10px;
+    top: 13px;
+  }
+  .login-page-new .form-check {
+    margin-top: 10px;
+  }
+  .login-page-new .form-check .form-check-input {
+    float: right;
+    width: 20px !important;
+    height: 20px !important;
+    border: 2px solid #555;
+    margin: 3px;
+  }
+  .login-page-new .form-check span {
+    margin: 0 5px;
+      font-size: 13px;
+  }
+  .login-page-new .form-check .form-check-input:checked {
+    background-color: #00A1AB;
+    border-color: #00A1AB !important;
+  }
+  .login-page-new .form-check .form-check-input:hover,
+  .login-page-new .form-check .form-check-input:focus {
+    box-shadow: none !important;
+    outline: none !important;
+  }
+  .logo-img-form {
+    display: none;
+    width: 125px;
+    margin: auto;
+    margin-bottom: 50px;
+    margin-top: -30px;
+  }
+  .form-control {
+    border-radius: 0 !important;
+  }
+  .error {
+    position: static !important;
+    font-size: 12px !important;
+    color: #f00;
+    margin-top: 10px !important;
+  }
+  .is-invalid {
+    padding: 0 30px !important;
+  }
+  .is-invalid + label {
+    padding: 0 30px !important;
+  }
+  @media (max-width: 767.98px) {
+  .logo-img-form {
+    display: block;
+  }
+    .login-page-new .login-account-form .grid-center h6 {
+      margin-bottom: 40px;
+  }
+  .no-mobile {
+    display: none;
+  }
+  }
+
+.spinner-loader {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    background: rgba(100, 98, 98, 0.8784313725);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    color: #fff;
+    z-index: 999999999999;
+}
+
+    .spinner-loader.active {
+        display: flex;
+    }
+
+.spinner-loader {
+    display: none
+}
+
+    .spinner-loader.active {
+        display: flex;
+        height: 100vh;
+        width: 100%;
+        justify-content: center;
+        align-items: center;
+    }
+
+.loading-wave {
+    width: 300px;
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+}
+
+.loading-bar {
+    width: 20px;
+    height: 10px;
+    margin: 0 5px;
+    background-color: #8c755d;
+    border-radius: 5px;
+    animation: loading-wave-animation 1s ease-in-out infinite;
+}
+
+    .loading-bar:nth-child(2) {
+        animation-delay: 0.1s;
+    }
+
+    .loading-bar:nth-child(3) {
+        animation-delay: 0.2s;
+    }
+
+    .loading-bar:nth-child(4) {
+        animation-delay: 0.3s;
+    }
+
+@keyframes loading-wave-animation {
+    0% {
+        height: 10px;
+    }
+
+    50% {
+        height: 50px;
+    }
+
+    100% {
+        height: 10px;
+    }
+}

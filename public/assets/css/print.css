@@ -1,0 +1,20 @@
+@media print {
+    body {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+    .Sidebar,
+    .title-page,
+    .TopHeader {
+        display: none !important;
+    }
+    .fieldset-sema {
+        padding-left: 3px !important;
+    }
+    .collapsed-date.pt-4 {
+        padding-top: 0 !important;
+    }
+    .fieldset-sema {
+        padding-bottom: 0 !important
+    }
+}

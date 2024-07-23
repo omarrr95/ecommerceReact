@@ -1,0 +1,71 @@
+@font-face {
+    font-family: Changa-Regular;
+    src: url(./../fonts/changa/Changa-Regular.ttf);
+} 
+    body , div,span,a , p ,
+    .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6{
+      font-family: 'Changa-Regular' !important; 
+    }
+body {
+  direction: ltr;
+  font-family: 'Changa-Regular' !important; 
+  letter-spacing: 0.3px;
+}
+.Sidebar {
+    left: 0;
+    box-shadow: -4px 0px 3px 0px rgb(176 176 176 / 10%);
+}
+    .Sidebar .SidebarBody > section ul > li > a.HasChild:after {
+        left: 10px
+    }
+    .Sidebar .SidebarBody>section ul li.HasChild-list ul li a.active,
+.Sidebar .SidebarBody>section ul>li>a:hover {
+    border-left: 4px solid #26b6c1;
+}
+.table.table-style tbody tr td .input-container span{
+    left: 0px;
+}
+.price-unit {
+    right: 23px;
+  }
+.login-page-new .input-group .show-pass {
+    left: unset !important;
+    right: 5px;
+}
+.input-search-container .select2.select2-container .select2-selection .select2-selection__rendered {
+    padding-left: 40px !important;
+}
+.container-form-input .did-floating-label-content .did-floating-label {
+    left: 15px;
+    right: unset;
+}
+.input-container-icon hint {
+    right: 15px;
+}
+.title-page .actions .back-btn img {
+    -webkit-transform: scaleX(-1);
+    transform: scaleX(-1);
+}
+@media (min-width: 992px) {
+    .TopHeader, body {
+            margin-left: 200px;
+        }
+        .TopHeader {
+            left: 0px;
+        }
+            body.CollapseSidebar,
+            .CollapseSidebar .TopHeader {
+                margin-left: 70px;
+            }
+        }
+    @media (max-width: 992px) {
+
+        .Sidebar {
+            left: -100%;
+            transition: all 0.3s;
+         }
+        .showSidebar .Sidebar {
+         left: 0;
+         transition: all 0.3s;
+        }
+    }
