@@ -1,19 +1,45 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import Swal from "sweetalert2";
 
 function Category() {
   const baseUrl = "http://ecommerce-api.omar-work.website";
   const [categories, setCategories] = useState([]);
+  const [departments, setDepartments] = useState([]);
 
   useEffect(() => {
+    axios.get(`${baseUrl}/api/Departments`).then((res) => {
+      setDepartments(res.data);
+    });
     getCategories();
   }, []);
 
   function getCategories() {
     axios.get(`${baseUrl}/api/Categories`).then((res) => {
-      console.log(res);
       setCategories(res.data);
+    });
+  }
+
+  function deleteCategory(category) {
+    axios.delete(`${baseUrl}/api/Categories?id=${category.id}`).then((res) => {
+      getCategories();
+      Swal.fire({
+        title: `تم حذف القسم ${category.name}`,
+        icon: "success",
+        timer: 3000,
+      });
+    });
+  }
+
+  function search(e) {
+    let rows = document.querySelectorAll("tbody tr");
+    rows.forEach((row) => {
+      if (row.textContent.includes(e.target.value)) {
+        row.style.display = "table-row";
+      } else {
+        row.style.display = "none";
+      }
     });
   }
 
@@ -38,6 +64,7 @@ function Category() {
             placeholder="Search Here ..."
             aria-label="Recipient's username"
             aria-describedby="basic-addon2"
+            onChange={search}
           />
           <span className="input-group-text" id="basic-addon2">
             <i className="fa-solid fa-magnifying-glass"></i>
@@ -66,16 +93,18 @@ function Category() {
                       <img width="60px" src={img} />
                     </td>
                     <td data-title="إسم الخدمة En">{name}</td>
-                    <td data-title="إسم الخدمة Ar">{departmentId}</td>
+                    <td data-title="إسم الخدمة Ar">
+                      {departments.find((el) => el.id === departmentId)?.name}
+                    </td>
 
                     <td className="control-btn">
                       <div className="d-flex">
-                        <a
+                        <Link
                           className="btn btn-details edit"
-                          href="/Categories/FormEdit/1"
+                          to={`/category/add/${id}`}
                         >
                           <i className="fa-solid fa-pencil"></i>
-                        </a>
+                        </Link>
                         <div className="btn-group dropup">
                           <button
                             type="button"
@@ -88,7 +117,17 @@ function Category() {
                           <ul className="dropdown-menu">
                             <div className="popover-content text-center">
                               <div className="btn-User">
-                                <a className="btn btn-icon-split btn-success">
+                                <a
+                                  className="btn btn-icon-split btn-success"
+                                  onClick={() =>
+                                    deleteCategory({
+                                      id,
+                                      name,
+                                      img,
+                                      departmentId,
+                                    })
+                                  }
+                                >
                                   <span className="icon text-white-50">
                                     <i className="fa fa-check-square"></i>
                                   </span>

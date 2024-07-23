@@ -15,6 +15,7 @@ function AddDepartment() {
   useEffect(() => {
     if (deptID) {
       axios.get(`${baseUrl}/api/Departments/${deptID}`).then((res) => {
+        console.log("Res", res);
         setName(res.data.name);
         setImage(res.data.img);
         document.querySelector(".upload-img").classList.add("active");
@@ -27,7 +28,6 @@ function AddDepartment() {
     if (!image) return;
 
     setImage(image);
-    console.log(image);
 
     let imageSize = image.size / 1024;
     let progress = 0;
@@ -89,7 +89,6 @@ function AddDepartment() {
         axios
           .put(`${baseUrl}/api/Departments?id=${deptID}`, { ...data, deptID })
           .then((res) => {
-            console.log(res);
             clearInputs();
             Swal.fire({
               title: `تم تعديل القسم ${name}`,
@@ -160,9 +159,9 @@ function AddDepartment() {
                   type="file"
                   id="file-upload"
                   name="file-upload"
-                  data-name={image?.name || ""}
                   className="fileInput"
                   accept=".png,.jpeg,.jpg"
+                  data-name={image?.name || ""}
                   onChange={handleUpload}
                 />
                 <input type="hidden" className="input-form-image" />

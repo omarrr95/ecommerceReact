@@ -7,26 +7,28 @@ function AddCategory() {
   const [image, setImage] = useState(null);
   const [name, setName] = useState("");
   const [isOpen, setIsOpen] = useState(false);
-  const [departmentId, setDepartmentId] = useState("");
   const [departments, setDepartments] = useState([]);
+  const [departmentId, setDepartmentId] = useState("");
   const baseUrl = "http://ecommerce-api.omar-work.website";
 
   const navigate = useNavigate();
-  const { deptID } = useParams();
+  const { catID } = useParams();
 
   useEffect(() => {
-    if (deptID) {
-      axios.get(`${baseUrl}/api/Categories/${deptID}`).then((res) => {
+    if (catID) {
+      axios.get(`${baseUrl}/api/Categories/${catID}`).then((res) => {
         setName(res.data.name);
         setImage(res.data.img);
+        setDepartmentId(res.data.departmentId);
         document.querySelector(".upload-img").classList.add("active");
       });
     }
 
     axios.get(`${baseUrl}/api/Departments`).then((res) => {
       setDepartments(res.data);
+      setDepartmentId(res.data[0]?.id);
     });
-  }, [deptID]);
+  }, [catID]);
 
   function handleUpload(e) {
     let image = e.target.files[0];
@@ -63,6 +65,26 @@ function AddCategory() {
       return false;
     }
 
+    if (catID && typeof image === "string") {
+      axios
+        .put(`${baseUrl}/api/Categories?id=${catID}`, {
+          id: catID,
+          name,
+          img: image,
+        })
+        .then((res) => {
+          clearInputs();
+          Swal.fire({
+            title: `تم تعديل النوع ${name}`,
+            icon: "success",
+            timer: 3000,
+          });
+          navigate("/category/index");
+        });
+
+      return;
+    }
+
     let reader = new FileReader();
     reader.readAsDataURL(image);
     reader.onload = () => {
@@ -71,6 +93,21 @@ function AddCategory() {
         departmentId,
         img: reader.result,
       };
+
+      if (catID) {
+        axios
+          .put(`${baseUrl}/api/Categories?id=${catID}`, { ...data, catID })
+          .then((res) => {
+            clearInputs();
+            Swal.fire({
+              title: `تم تعديل النوع ${name}`,
+              icon: "success",
+              timer: 3000,
+            });
+            navigate("/category/index");
+          });
+        return;
+      }
 
       axios
         .post(`${baseUrl}/api/Categories`, data)
@@ -130,6 +167,7 @@ function AddCategory() {
                   name="file-upload"
                   className="fileInput"
                   accept=".png,.jpeg,.jpg"
+                  data-name={image?.name || ""}
                   onChange={handleUpload}
                 />
                 <input type="hidden" className="input-form-image" />
@@ -173,7 +211,7 @@ function AddCategory() {
                       <div className="preview-container-img">
                         <img
                           src={
-                            typeof image === "string" && deptID
+                            typeof image === "string" && catID
                               ? image
                               : URL.createObjectURL(image)
                           }
@@ -219,7 +257,8 @@ function AddCategory() {
                   required
                   id="collection"
                   name="collection"
-                  onChange={(e) => setDepartment(e.target.value)}
+                  value={departmentId}
+                  onChange={(e) => setDepartmentId(e.target.value)}
                 >
                   {departments.map(({ id, name, img }) => {
                     return (
@@ -229,7 +268,7 @@ function AddCategory() {
                     );
                   })}
                 </select>
-                <label className="did-floating-label">القسم </label>
+                <label className="did-floating-label">النوع </label>
                 <span
                   className="text-danger field-validation-valid"
                   data-valmsg-for="Location_ar"
