@@ -14,15 +14,6 @@ function Category() {
     fetchCategories,
   } = useAppContext();
 
-  useEffect(() => {
-    if (!departments) {
-      fetchDepartments();
-    }
-    if (!categories) {
-      fetchCategories();
-    }
-  }, []);
-
   function deleteCategory(category) {
     axios.delete(`${baseUrl}/api/Categories?id=${category.id}`).then((res) => {
       setCategories(categories.filter((el) => el.id != category.id));

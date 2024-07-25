@@ -8,10 +8,17 @@ function AddDepartment() {
   const [image, setImage] = useState(null);
   const [name, setName] = useState("");
   const [isOpen, setIsOpen] = useState(false);
+  const [isDisabled, setIsDisabled] = useState(false);
 
   const navigate = useNavigate();
   const { deptID } = useParams();
-  const { baseUrl, handleUpload, fetchDepartments } = useContext(appContext);
+  const {
+    baseUrl,
+    departments,
+    handleUpload,
+    setDepartments,
+    fetchDepartments,
+  } = useContext(appContext);
 
   useEffect(() => {
     if (deptID) {
@@ -33,14 +40,16 @@ function AddDepartment() {
       return false;
     }
 
+    setIsDisabled(true);
+
     if (deptID && typeof image === "string") {
       let data = {
-        id: deptID,
+        id: +deptID,
         name,
         img: image,
       };
 
-      updateDepartments(deptID, data);
+      updateDepartments(data);
       return;
     }
 
@@ -53,25 +62,31 @@ function AddDepartment() {
       };
 
       if (deptID) {
-        updateDepartments(deptID, { ...data, deptID });
+        updateDepartments({ ...data, id: +deptID });
         return;
       }
 
-      axios.post(`${baseUrl}/api/Departments`, data).then((res) => {
-        Swal.fire({
-          title: `تم اضافة القسم ${name}`,
-          icon: "success",
-          timer: 3000,
-        });
+      axios
+        .post(`${baseUrl}/api/Departments`, data)
+        .then((res) => {
+          Swal.fire({
+            title: `تم اضافة القسم ${name}`,
+            icon: "success",
+            timer: 3000,
+          });
 
-        fetchDepartments();
-        clearInputs();
-        navigate("/department/index");
-      });
+          fetchDepartments();
+          clearInputs();
+          navigate("/department/index");
+        })
+        .catch((err) => {
+          setIsDisabled(false);
+          Swal.fire("حدث خطأ", "", "error");
+        });
     };
   }
 
-  function updateDepartments(deptID, data) {
+  function updateDepartments(data) {
     axios
       .put(`${baseUrl}/api/Departments?id=${deptID}`, data)
       .then((res) => {
@@ -80,12 +95,13 @@ function AddDepartment() {
           icon: "success",
           timer: 3000,
         });
-        fetchDepartments();
+        setDepartments(departments.map((el) => (el.id == deptID ? data : el)));
+        // fetchDepartments();
         clearInputs();
         navigate("/department/index");
       })
       .catch((err) => {
-        console.log("Error:", err);
+        setIsDisabled(false);
         Swal.fire("حدث خطأ", "", "error");
       });
   }
@@ -234,6 +250,7 @@ function AddDepartment() {
                 type="button"
                 className="btn btn-theme add-car"
                 onClick={addNewDepartment}
+                disabled={isDisabled}
               >
                 حفظ التعديلات
               </button>

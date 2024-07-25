@@ -30,6 +30,7 @@ function AppProvider({ children }) {
   function handleUpload(image) {
     if (!image) return;
 
+    let time = 1000;
     let progress = 0;
 
     document.querySelector(".progress-bar").style.width = 0 + "%";
@@ -44,7 +45,7 @@ function AppProvider({ children }) {
         document.querySelector(".progress-container").style.display = "none";
         document.querySelector(".upload-img").classList.add("active");
       }
-    }, 10);
+    }, time / 100);
   }
 
   return (

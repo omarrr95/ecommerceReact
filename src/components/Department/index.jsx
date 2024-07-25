@@ -1,5 +1,4 @@
 import axios from "axios";
-import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
 import { useAppContext } from "../../context/appContext";
@@ -7,12 +6,6 @@ import { useAppContext } from "../../context/appContext";
 function Department() {
   const { baseUrl, departments, setDepartments, fetchDepartments } =
     useAppContext();
-
-  useEffect(() => {
-    if (!departments) {
-      fetchDepartments();
-    }
-  }, []);
 
   function search(e) {
     let rows = document.querySelectorAll("tbody tr");

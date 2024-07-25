@@ -9,11 +9,18 @@ function AddCategory() {
   const [name, setName] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [departmentId, setDepartmentId] = useState("");
+  const [isDisabled, setIsDisabled] = useState(false);
 
   const navigate = useNavigate();
   const { catID } = useParams();
-  const { baseUrl, departments, handleUpload, fetchCategories } =
-    useAppContext();
+  const {
+    baseUrl,
+    departments,
+    categories,
+    handleUpload,
+    setCategories,
+    fetchCategories,
+  } = useAppContext();
 
   useEffect(() => {
     if (catID) {
@@ -35,15 +42,17 @@ function AddCategory() {
       });
       return false;
     }
+    setIsDisabled(true);
 
     if (catID && typeof image === "string") {
       let data = {
-        id: catID,
+        id: +catID,
         name,
+        departmentId,
         img: image,
       };
 
-      updateCategories(catID, data);
+      updateCategories(data);
       return;
     }
 
@@ -57,7 +66,7 @@ function AddCategory() {
       };
 
       if (catID) {
-        updateCategories(catID, { ...data, catID });
+        updateCategories({ ...data, id: +catID });
         return;
       }
 
@@ -75,12 +84,13 @@ function AddCategory() {
           navigate("/category/index");
         })
         .catch((err) => {
+          setIsDisabled(false);
           Swal.fire("حدث خطأ", "", "error");
         });
     };
   }
 
-  function updateCategories(catID, data) {
+  function updateCategories(data) {
     console.log("From Update Categories");
     axios
       .put(`${baseUrl}/api/Categories?id=${catID}`, data)
@@ -90,12 +100,13 @@ function AddCategory() {
           icon: "success",
           timer: 3000,
         });
-        fetchCategories();
+        setCategories(categories.map((el) => (el.id == catID ? data : el)));
+        // fetchCategories();
         clearInputs();
         navigate("/category/index");
       })
       .catch((err) => {
-        console.log("Error:", err);
+        setIsDisabled(false);
         Swal.fire("حدث خطأ", "", "error");
       });
   }
@@ -113,6 +124,13 @@ function AddCategory() {
         <div className="img-title">
           <h5>تعديل الأنواع</h5>
         </div>
+        <h4
+          className="p-2 text-white"
+          style={{ cursor: "pointer" }}
+          onClick={() => navigate("/category/index")}
+        >
+          <i className="fa-solid fa-arrow-left"></i>
+        </h4>
       </div>
       <div className="box-section">
         <div className="form-row row form-row-small pb-0">
@@ -208,7 +226,6 @@ function AddCategory() {
               <div className="did-floating-label-content">
                 <input
                   className="did-floating-input w-100 large-input form-control  lang-en"
-                  required=""
                   type="text"
                   data-val="true"
                   data-val-required="The Phone field is required."
@@ -232,14 +249,13 @@ function AddCategory() {
               <div className="did-floating-label-content">
                 <select
                   className="did-floating-input w-100 large-input form-control"
-                  required
                   id="collection"
                   name="collection"
                   value={departmentId}
                   onChange={(e) => setDepartmentId(e.target.value)}
                 >
                   <option value="">إختر نوع</option>
-                  {departments?.map(({ id, name, img }) => {
+                  {departments?.map(({ id, name }) => {
                     return (
                       <option value={id} key={id}>
                         {name}
@@ -263,6 +279,7 @@ function AddCategory() {
               <button
                 type="button"
                 className="btn btn-theme add-car"
+                disabled={isDisabled}
                 onClick={addNewCategory}
               >
                 حفظ التعديلات
