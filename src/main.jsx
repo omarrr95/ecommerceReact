@@ -8,11 +8,14 @@ import "bootstrap/dist/js/bootstrap.min.js";
 import "../public/assets/css/style.css";
 import "./index.css";
 import { BrowserRouter } from "react-router-dom";
+import AppProvider from "./context/appContext.jsx";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <BrowserRouter>
-      <App />
+      <AppProvider>
+        <App />
+      </AppProvider>
     </BrowserRouter>
   </React.StrictMode>
 );

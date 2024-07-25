@@ -2,17 +2,18 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
+import { useAppContext } from "../../context/appContext.jsx";
 
 function AddCategory() {
   const [image, setImage] = useState(null);
   const [name, setName] = useState("");
   const [isOpen, setIsOpen] = useState(false);
-  const [departments, setDepartments] = useState([]);
   const [departmentId, setDepartmentId] = useState("");
-  const baseUrl = "http://ecommerce-api.omar-work.website";
 
   const navigate = useNavigate();
   const { catID } = useParams();
+  const { baseUrl, departments, handleUpload, fetchCategories } =
+    useAppContext();
 
   useEffect(() => {
     if (catID) {
@@ -23,37 +24,7 @@ function AddCategory() {
         document.querySelector(".upload-img").classList.add("active");
       });
     }
-
-    axios.get(`${baseUrl}/api/Departments`).then((res) => {
-      setDepartments(res.data);
-      setDepartmentId(res.data[0]?.id);
-    });
-  }, [catID]);
-
-  function handleUpload(e) {
-    let image = e.target.files[0];
-    if (!image) return;
-
-    setImage(image);
-    console.log(image);
-
-    let imageSize = image.size / 1024;
-    let progress = 0;
-
-    document.querySelector(".progress-bar").style.width = 0 + "%";
-    document.querySelector(".progress-container").style.display = "block";
-
-    let id = setInterval(() => {
-      progress += 1;
-      document.querySelector(".progress-bar").style.width = progress + "%";
-      document.querySelector(".progress-text").textContent = progress + "%";
-      if (progress >= 100) {
-        clearInterval(id);
-        document.querySelector(".progress-container").style.display = "none";
-        document.querySelector(".upload-img").classList.add("active");
-      }
-    }, 10);
-  }
+  }, []);
 
   function addNewCategory() {
     if (!image || !name) {
@@ -66,22 +37,13 @@ function AddCategory() {
     }
 
     if (catID && typeof image === "string") {
-      axios
-        .put(`${baseUrl}/api/Categories?id=${catID}`, {
-          id: catID,
-          name,
-          img: image,
-        })
-        .then((res) => {
-          clearInputs();
-          Swal.fire({
-            title: `تم تعديل النوع ${name}`,
-            icon: "success",
-            timer: 3000,
-          });
-          navigate("/category/index");
-        });
+      let data = {
+        id: catID,
+        name,
+        img: image,
+      };
 
+      updateCategories(catID, data);
       return;
     }
 
@@ -95,17 +57,7 @@ function AddCategory() {
       };
 
       if (catID) {
-        axios
-          .put(`${baseUrl}/api/Categories?id=${catID}`, { ...data, catID })
-          .then((res) => {
-            clearInputs();
-            Swal.fire({
-              title: `تم تعديل النوع ${name}`,
-              icon: "success",
-              timer: 3000,
-            });
-            navigate("/category/index");
-          });
+        updateCategories(catID, { ...data, catID });
         return;
       }
 
@@ -113,16 +65,39 @@ function AddCategory() {
         .post(`${baseUrl}/api/Categories`, data)
         .then((res) => {
           console.log(res);
-          clearInputs();
           Swal.fire({
             title: `تم اضافة النوع ${name}`,
             icon: "success",
             timer: 3000,
           });
+          fetchCategories();
+          clearInputs();
           navigate("/category/index");
         })
-        .catch((err) => console.log(err));
+        .catch((err) => {
+          Swal.fire("حدث خطأ", "", "error");
+        });
     };
+  }
+
+  function updateCategories(catID, data) {
+    console.log("From Update Categories");
+    axios
+      .put(`${baseUrl}/api/Categories?id=${catID}`, data)
+      .then((res) => {
+        Swal.fire({
+          title: `تم تعديل النوع ${name}`,
+          icon: "success",
+          timer: 3000,
+        });
+        fetchCategories();
+        clearInputs();
+        navigate("/category/index");
+      })
+      .catch((err) => {
+        console.log("Error:", err);
+        Swal.fire("حدث خطأ", "", "error");
+      });
   }
 
   function clearInputs() {
@@ -136,7 +111,7 @@ function AddCategory() {
     <div className="body-content">
       <div className="title-page">
         <div className="img-title">
-          <h5>البيانات الرئيسية</h5>
+          <h5>تعديل الأنواع</h5>
         </div>
       </div>
       <div className="box-section">
@@ -168,7 +143,10 @@ function AddCategory() {
                   className="fileInput"
                   accept=".png,.jpeg,.jpg"
                   data-name={image?.name || ""}
-                  onChange={handleUpload}
+                  onChange={(e) => {
+                    setImage(e.target.files[0]);
+                    handleUpload(e.target.files[0]);
+                  }}
                 />
                 <input type="hidden" className="input-form-image" />
                 <div className="progress-container">
@@ -260,7 +238,8 @@ function AddCategory() {
                   value={departmentId}
                   onChange={(e) => setDepartmentId(e.target.value)}
                 >
-                  {departments.map(({ id, name, img }) => {
+                  <option value="">إختر نوع</option>
+                  {departments?.map(({ id, name, img }) => {
                     return (
                       <option value={id} key={id}>
                         {name}

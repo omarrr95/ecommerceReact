@@ -14,18 +14,27 @@ function App() {
     <div className="app">
       <Navbar />
       <Sidebar />
+
       <Routes>
         <Route path="/" element={<h1 className="body-content">Home</h1>} />
 
-        <Route path="/department/index" element={<Department />} />
-        <Route path="/department/add" element={<AddDepartment />} />
-        <Route path="/department/edit/:deptID" element={<AddDepartment />} />
-        <Route path="/category/index" element={<Category />} />
-        <Route path="/category/add" element={<AddCategory />} />
-        <Route path="/category/add/:catID" element={<AddCategory />} />
-        <Route path="/product/index" element={<Product />} />
-        <Route path="/product/add" element={<AddProduct />} />
-        <Route path="/product/edit/:id" element={<AddProduct />} />
+        <Route path="department">
+          <Route path="index" element={<Department />} />
+          <Route path="add" element={<AddDepartment />} />
+          <Route path="edit/:deptID" element={<AddDepartment />} />
+        </Route>
+
+        <Route path="category">
+          <Route path="index" element={<Category />} />
+          <Route path="add" element={<AddCategory />} />
+          <Route path="edit/:catID" element={<AddCategory />} />
+        </Route>
+
+        <Route path="product">
+          <Route path="index" element={<Product />} />
+          <Route path="add" element={<AddProduct />} />
+          <Route path="edit/:id" element={<AddProduct />} />
+        </Route>
       </Routes>
     </div>
   );

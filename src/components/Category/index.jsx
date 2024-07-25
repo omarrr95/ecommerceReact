@@ -2,28 +2,30 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
+import { useAppContext } from "../../context/appContext";
 
 function Category() {
-  const baseUrl = "http://ecommerce-api.omar-work.website";
-  const [categories, setCategories] = useState([]);
-  const [departments, setDepartments] = useState([]);
+  const {
+    baseUrl,
+    departments,
+    categories,
+    setCategories,
+    fetchDepartments,
+    fetchCategories,
+  } = useAppContext();
 
   useEffect(() => {
-    axios.get(`${baseUrl}/api/Departments`).then((res) => {
-      setDepartments(res.data);
-    });
-    getCategories();
+    if (!departments) {
+      fetchDepartments();
+    }
+    if (!categories) {
+      fetchCategories();
+    }
   }, []);
-
-  function getCategories() {
-    axios.get(`${baseUrl}/api/Categories`).then((res) => {
-      setCategories(res.data);
-    });
-  }
 
   function deleteCategory(category) {
     axios.delete(`${baseUrl}/api/Categories?id=${category.id}`).then((res) => {
-      getCategories();
+      setCategories(categories.filter((el) => el.id != category.id));
       Swal.fire({
         title: `تم حذف القسم ${category.name}`,
         icon: "success",
@@ -82,7 +84,7 @@ function Category() {
               </tr>
             </thead>
             <tbody>
-              {categories.map(({ id, name, img, departmentId }, index) => {
+              {categories?.map(({ id, name, img, departmentId }, index) => {
                 return (
                   <tr key={id}>
                     <td className="promotion-id" scope="row">
@@ -94,14 +96,14 @@ function Category() {
                     </td>
                     <td data-title="إسم الخدمة En">{name}</td>
                     <td data-title="إسم الخدمة Ar">
-                      {departments.find((el) => el.id === departmentId)?.name}
+                      {departments?.find((el) => el.id === departmentId)?.name}
                     </td>
 
                     <td className="control-btn">
                       <div className="d-flex">
                         <Link
                           className="btn btn-details edit"
-                          to={`/category/add/${id}`}
+                          to={`/category/edit/${id}`}
                         >
                           <i className="fa-solid fa-pencil"></i>
                         </Link>

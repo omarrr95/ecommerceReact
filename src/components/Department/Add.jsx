@@ -1,51 +1,27 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
+import { appContext } from "../../context/appContext";
 
 function AddDepartment() {
   const [image, setImage] = useState(null);
   const [name, setName] = useState("");
   const [isOpen, setIsOpen] = useState(false);
-  const baseUrl = "http://ecommerce-api.omar-work.website";
 
   const navigate = useNavigate();
   const { deptID } = useParams();
+  const { baseUrl, handleUpload, fetchDepartments } = useContext(appContext);
 
   useEffect(() => {
     if (deptID) {
       axios.get(`${baseUrl}/api/Departments/${deptID}`).then((res) => {
-        console.log("Res", res);
         setName(res.data.name);
         setImage(res.data.img);
         document.querySelector(".upload-img").classList.add("active");
       });
     }
   }, [deptID]);
-
-  function handleUpload(e) {
-    let image = e.target.files[0];
-    if (!image) return;
-
-    setImage(image);
-
-    let imageSize = image.size / 1024;
-    let progress = 0;
-
-    document.querySelector(".progress-bar").style.width = 0 + "%";
-    document.querySelector(".progress-container").style.display = "block";
-
-    let id = setInterval(() => {
-      progress += 1;
-      document.querySelector(".progress-bar").style.width = progress + "%";
-      document.querySelector(".progress-text").textContent = progress + "%";
-      if (progress >= 100) {
-        clearInterval(id);
-        document.querySelector(".progress-container").style.display = "none";
-        document.querySelector(".upload-img").classList.add("active");
-      }
-    }, 10);
-  }
 
   function addNewDepartment() {
     if (!image || !name) {
@@ -58,22 +34,13 @@ function AddDepartment() {
     }
 
     if (deptID && typeof image === "string") {
-      axios
-        .put(`${baseUrl}/api/Departments?id=${deptID}`, {
-          id: deptID,
-          name,
-          img: image,
-        })
-        .then((res) => {
-          clearInputs();
-          Swal.fire({
-            title: `تم تعديل القسم ${name}`,
-            icon: "success",
-            timer: 3000,
-          });
-          navigate("/department/index");
-        });
+      let data = {
+        id: deptID,
+        name,
+        img: image,
+      };
 
+      updateDepartments(deptID, data);
       return;
     }
 
@@ -86,30 +53,41 @@ function AddDepartment() {
       };
 
       if (deptID) {
-        axios
-          .put(`${baseUrl}/api/Departments?id=${deptID}`, { ...data, deptID })
-          .then((res) => {
-            clearInputs();
-            Swal.fire({
-              title: `تم تعديل القسم ${name}`,
-              icon: "success",
-              timer: 3000,
-            });
-            navigate("/department/index");
-          });
+        updateDepartments(deptID, { ...data, deptID });
         return;
       }
 
       axios.post(`${baseUrl}/api/Departments`, data).then((res) => {
-        clearInputs();
         Swal.fire({
           title: `تم اضافة القسم ${name}`,
           icon: "success",
           timer: 3000,
         });
+
+        fetchDepartments();
+        clearInputs();
         navigate("/department/index");
       });
     };
+  }
+
+  function updateDepartments(deptID, data) {
+    axios
+      .put(`${baseUrl}/api/Departments?id=${deptID}`, data)
+      .then((res) => {
+        Swal.fire({
+          title: `تم تعديل القسم ${name}`,
+          icon: "success",
+          timer: 3000,
+        });
+        fetchDepartments();
+        clearInputs();
+        navigate("/department/index");
+      })
+      .catch((err) => {
+        console.log("Error:", err);
+        Swal.fire("حدث خطأ", "", "error");
+      });
   }
 
   function clearInputs() {
@@ -123,7 +101,7 @@ function AddDepartment() {
     <div className="body-content">
       <div className="title-page">
         <div className="img-title">
-          <h5>البيانات الرئيسية</h5>
+          <h5>تعديل الأقسام</h5>
         </div>
         <h4
           className="p-2 text-white"
@@ -162,7 +140,10 @@ function AddDepartment() {
                   className="fileInput"
                   accept=".png,.jpeg,.jpg"
                   data-name={image?.name || ""}
-                  onChange={handleUpload}
+                  onChange={(e) => {
+                    setImage(e.target.files[0]);
+                    handleUpload(e.target.files[0]);
+                  }}
                 />
                 <input type="hidden" className="input-form-image" />
                 <div className="progress-container">

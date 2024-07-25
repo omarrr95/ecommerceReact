@@ -1,6 +1,8 @@
+import { useState } from "react";
 import { useParams } from "react-router-dom";
 
 function AddProduct() {
+  const [isOpen, setIOpen] = useState(false);
   let { id } = useParams();
 
   return (
@@ -55,14 +57,16 @@ function AddProduct() {
                     </div>
                   </div>
                 </div>
-                <div className="preview-container-modal">
-                  <i className="fas fa-times"></i>
-                  <div className="preview-container">
-                    <div className="preview-container-img">
-                      <img src="" alt="" />
+                {isOpen && (
+                  <div className="preview-container-modal">
+                    <i className="fas fa-times"></i>
+                    <div className="preview-container">
+                      <div className="preview-container-img">
+                        <img src="" alt="" />
+                      </div>
                     </div>
                   </div>
-                </div>
+                )}
               </div>
             </div>
           </div>

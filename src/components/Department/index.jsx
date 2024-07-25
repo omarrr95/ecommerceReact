@@ -1,40 +1,43 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
+import { useAppContext } from "../../context/appContext";
 
 function Department() {
-  const baseUrl = "http://ecommerce-api.omar-work.website";
-  const [departments, setDepartments] = useState([]);
-  const [allDepartments, setAllDepartments] = useState([]);
+  const { baseUrl, departments, setDepartments, fetchDepartments } =
+    useAppContext();
 
   useEffect(() => {
-    getDepartments();
+    if (!departments) {
+      fetchDepartments();
+    }
   }, []);
 
-  function getDepartments() {
-    axios.get(`${baseUrl}/api/Departments`).then((res) => {
-      setDepartments(res.data);
-      setAllDepartments(res.data);
-    });
-  }
-
   function search(e) {
-    setDepartments(
-      allDepartments.filter((el) => el.name.includes(e.target.value))
-    );
+    let rows = document.querySelectorAll("tbody tr");
+    rows.forEach((row) => {
+      if (row.textContent.includes(e.target.value)) {
+        row.style.display = "table-row";
+      } else {
+        row.style.display = "none";
+      }
+    });
   }
 
   function deleteDepartment(department) {
     axios
       .delete(`${baseUrl}/api/Departments?id=${department.id}`)
       .then((res) => {
-        getDepartments();
+        setDepartments(departments.filter((el) => el.id != department.id));
         Swal.fire({
           title: `تم حذف القسم ${department.name}`,
           icon: "success",
           timer: 3000,
         });
+      })
+      .catch((error) => {
+        Swal.fire("Something went wrong", "", "error");
       });
   }
 
@@ -76,7 +79,7 @@ function Department() {
               </tr>
             </thead>
             <tbody>
-              {departments.map((department, index) => {
+              {departments?.map((department, index) => {
                 return (
                   <tr key={department.id}>
                     <td className="promotion-id" scope="row">
