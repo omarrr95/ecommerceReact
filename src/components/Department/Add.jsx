@@ -1,8 +1,10 @@
 import axios from "axios";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
-import { appContext } from "../../context/appContext";
+import { useDispatch, useSelector } from "react-redux";
+import * as all from "../../redux/actions/actions";
+import { fetchDepartments, baseUrl, handleUpload } from "../../redux/actions";
 
 function AddDepartment() {
   const [image, setImage] = useState(null);
@@ -12,23 +14,18 @@ function AddDepartment() {
 
   const navigate = useNavigate();
   const { deptID } = useParams();
-  const {
-    baseUrl,
-    departments,
-    handleUpload,
-    setDepartments,
-    fetchDepartments,
-  } = useContext(appContext);
+
+  const dispatch = useDispatch();
+  const { departments } = useSelector((state) => state.departmentsState);
 
   useEffect(() => {
-    if (deptID) {
-      axios.get(`${baseUrl}/api/Departments/${deptID}`).then((res) => {
-        setName(res.data.name);
-        setImage(res.data.img);
-        document.querySelector(".upload-img").classList.add("active");
-      });
+    if (deptID && departments) {
+      let department = departments?.find((el) => el.id == deptID);
+      setName(department.name);
+      setImage(department.img);
+      document.querySelector(".upload-img").classList.add("active");
     }
-  }, [deptID]);
+  }, [departments, deptID]);
 
   function addNewDepartment() {
     if (!image || !name) {
@@ -75,7 +72,7 @@ function AddDepartment() {
             timer: 3000,
           });
 
-          fetchDepartments();
+          dispatch(fetchDepartments());
           clearInputs();
           navigate("/department/index");
         })
@@ -95,8 +92,11 @@ function AddDepartment() {
           icon: "success",
           timer: 3000,
         });
-        setDepartments(departments.map((el) => (el.id == deptID ? data : el)));
-        // fetchDepartments();
+        dispatch(
+          all.setDepartments(
+            departments.map((el) => (el.id == deptID ? data : el))
+          )
+        );
         clearInputs();
         navigate("/department/index");
       })
@@ -252,7 +252,11 @@ function AddDepartment() {
                 onClick={addNewDepartment}
                 disabled={isDisabled}
               >
-                حفظ التعديلات
+                {isDisabled ? (
+                  <span className="spinner-border"></span>
+                ) : (
+                  " حفظ التعديلات"
+                )}
               </button>
             </div>
           </div>

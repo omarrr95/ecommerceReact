@@ -1,0 +1,7 @@
+export const SET_DEPARTMENTS = "SET_DEPARTMENTS";
+export const SET_CATEGORIES = "SET_CATEGORIES";
+export const SET_BRANDS = "SET_BRANDS";
+export const SET_PRODUCTS = "SET_PRODUCTS";
+export const SET_PRODUCT_UNITS = "SET_PRODUCT_UNITS";
+export const SET_COLORS = "SET_COLORS";
+export const SET_LOADING = "SET_LOADING";

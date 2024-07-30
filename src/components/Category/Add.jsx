@@ -2,36 +2,47 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
-import { useAppContext } from "../../context/appContext.jsx";
+import { useDispatch, useSelector } from "react-redux";
+import { setCategories } from "../../redux/actions/actions.js";
+import {
+  baseUrl,
+  fetchCategories,
+  handleUpload,
+} from "../../redux/actions/index.js";
 
 function AddCategory() {
   const [image, setImage] = useState(null);
   const [name, setName] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [departmentId, setDepartmentId] = useState("");
+  const [brandId, setBrandId] = useState("");
   const [isDisabled, setIsDisabled] = useState(false);
 
   const navigate = useNavigate();
   const { catID } = useParams();
-  const {
-    baseUrl,
-    departments,
-    categories,
-    handleUpload,
-    setCategories,
-    fetchCategories,
-  } = useAppContext();
+
+  const dispatch = useDispatch();
+  const { departments } = useSelector((state) => state.departmentsState);
+  const { categories } = useSelector((state) => state.categoriesState);
+  const { brands } = useSelector((state) => state.brandsState);
 
   useEffect(() => {
-    if (catID) {
-      axios.get(`${baseUrl}/api/Categories/${catID}`).then((res) => {
-        setName(res.data.name);
-        setImage(res.data.img);
-        setDepartmentId(res.data.departmentId);
-        document.querySelector(".upload-img").classList.add("active");
-      });
+    if (catID && categories) {
+      // axios.get(`${baseUrl}/api/Categories/${catID}`).then((res) => {
+      //   setName(res.data.name);
+      //   setImage(res.data.img);
+      //   setDepartmentId(res.data.departmentId);
+      //   document.querySelector(".upload-img").classList.add("active");
+      // });
+
+      let category = categories?.find((el) => el.id == catID);
+      setName(category.name);
+      setImage(category.img);
+      setBrandId(category.brandsId);
+      setDepartmentId(category.departmentId);
+      document.querySelector(".upload-img").classList.add("active");
     }
-  }, []);
+  }, [categories, catID]);
 
   function addNewCategory() {
     if (!image || !name) {
@@ -49,6 +60,7 @@ function AddCategory() {
         id: +catID,
         name,
         departmentId,
+        brandsId: brandId,
         img: image,
       };
 
@@ -62,6 +74,7 @@ function AddCategory() {
       let data = {
         name,
         departmentId,
+        brandsId: brandId,
         img: reader.result,
       };
 
@@ -79,7 +92,7 @@ function AddCategory() {
             icon: "success",
             timer: 3000,
           });
-          fetchCategories();
+          dispatch(fetchCategories());
           clearInputs();
           navigate("/category/index");
         })
@@ -91,7 +104,6 @@ function AddCategory() {
   }
 
   function updateCategories(data) {
-    console.log("From Update Categories");
     axios
       .put(`${baseUrl}/api/Categories?id=${catID}`, data)
       .then((res) => {
@@ -100,8 +112,9 @@ function AddCategory() {
           icon: "success",
           timer: 3000,
         });
-        setCategories(categories.map((el) => (el.id == catID ? data : el)));
-        // fetchCategories();
+        dispatch(
+          setCategories(categories.map((el) => (el.id == catID ? data : el)))
+        );
         clearInputs();
         navigate("/category/index");
       })
@@ -263,7 +276,35 @@ function AddCategory() {
                     );
                   })}
                 </select>
-                <label className="did-floating-label">النوع </label>
+                <label className="did-floating-label">القسم </label>
+                <span
+                  className="text-danger field-validation-valid"
+                  data-valmsg-for="Location_ar"
+                  data-valmsg-replace="true"
+                ></span>
+              </div>
+            </div>
+          </div>
+          <div className="col-md-3 col-sm-6 ">
+            <div className="container-form-input input-label">
+              <div className="did-floating-label-content">
+                <select
+                  className="did-floating-input w-100 large-input form-control"
+                  id="collection"
+                  name="collection"
+                  value={brandId}
+                  onChange={(e) => setBrandId(e.target.value)}
+                >
+                  <option value="">إختر ماركة</option>
+                  {brands?.map(({ id, name }) => {
+                    return (
+                      <option value={id} key={id}>
+                        {name}
+                      </option>
+                    );
+                  })}
+                </select>
+                <label className="did-floating-label">الماركة </label>
                 <span
                   className="text-danger field-validation-valid"
                   data-valmsg-for="Location_ar"
@@ -282,7 +323,11 @@ function AddCategory() {
                 disabled={isDisabled}
                 onClick={addNewCategory}
               >
-                حفظ التعديلات
+                {isDisabled ? (
+                  <span className="spinner-border"></span>
+                ) : (
+                  "حفظ التعديلات"
+                )}
               </button>
             </div>
           </div>

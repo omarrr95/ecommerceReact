@@ -2,21 +2,19 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
-import { useAppContext } from "../../context/appContext";
+import { useDispatch, useSelector } from "react-redux";
+import { setCategories } from "../../redux/actions/actions";
+import { baseUrl } from "../../redux/actions";
 
 function Category() {
-  const {
-    baseUrl,
-    departments,
-    categories,
-    setCategories,
-    fetchDepartments,
-    fetchCategories,
-  } = useAppContext();
+  const dispatch = useDispatch();
+  const { categories } = useSelector((state) => state.categoriesState);
+  const { departments } = useSelector((state) => state.departmentsState);
+  const { brands } = useSelector((state) => state.brandsState);
 
   function deleteCategory(category) {
     axios.delete(`${baseUrl}/api/Categories?id=${category.id}`).then((res) => {
-      setCategories(categories.filter((el) => el.id != category.id));
+      dispatch(setCategories(categories.filter((el) => el.id != category.id)));
       Swal.fire({
         title: `تم حذف القسم ${category.name}`,
         icon: "success",
@@ -71,79 +69,88 @@ function Category() {
                 <th>الصورة</th>
                 <th>الاسم</th>
                 <th>القسم</th>
+                <th>البراند</th>
                 <th>التحكم</th>
               </tr>
             </thead>
             <tbody>
-              {categories?.map(({ id, name, img, departmentId }, index) => {
-                return (
-                  <tr key={id}>
-                    <td className="promotion-id" scope="row">
-                      {index + 1}
-                    </td>
-                    <td data-title="صورة الخدمة">
-                      {" "}
-                      <img width="60px" src={img} />
-                    </td>
-                    <td data-title="إسم الخدمة En">{name}</td>
-                    <td data-title="إسم الخدمة Ar">
-                      {departments?.find((el) => el.id === departmentId)?.name}
-                    </td>
+              {categories?.map(
+                ({ id, name, img, departmentId, brandsId }, index) => {
+                  return (
+                    <tr key={id}>
+                      <td className="promotion-id" scope="row">
+                        {index + 1}
+                      </td>
+                      <td data-title="صورة الخدمة">
+                        {" "}
+                        <img width="60px" src={img} />
+                      </td>
+                      <td data-title="إسم الخدمة En">{name}</td>
+                      <td data-title="إسم الخدمة Ar">
+                        {
+                          departments?.find((el) => +el.id === +departmentId)
+                            ?.name
+                        }
+                      </td>
+                      <td>
+                        {brands?.find((el) => +el.id === +brandsId)?.name}
+                      </td>
 
-                    <td className="control-btn">
-                      <div className="d-flex">
-                        <Link
-                          className="btn btn-details edit"
-                          to={`/category/edit/${id}`}
-                        >
-                          <i className="fa-solid fa-pencil"></i>
-                        </Link>
-                        <div className="btn-group dropup">
-                          <button
-                            type="button"
-                            className="btn btn-details delete"
-                            data-bs-toggle="dropdown"
-                            aria-expanded="false"
+                      <td className="control-btn">
+                        <div className="d-flex">
+                          <Link
+                            className="btn btn-details edit"
+                            to={`/category/edit/${id}`}
                           >
-                            <i className="fa-regular fa-trash-can"></i>
-                          </button>
-                          <ul className="dropdown-menu">
-                            <div className="popover-content text-center">
-                              <div className="btn-User">
-                                <a
-                                  className="btn btn-icon-split btn-success"
-                                  onClick={() =>
-                                    deleteCategory({
-                                      id,
-                                      name,
-                                      img,
-                                      departmentId,
-                                    })
-                                  }
-                                >
-                                  <span className="icon text-white-50">
-                                    <i className="fa fa-check-square"></i>
-                                  </span>
-                                  <span className="text"> Yes</span>
-                                </a>
-                                <a
-                                  className="btn btn-danger btn-icon-split"
-                                  data-dismiss="confirmation"
-                                >
-                                  <span className="icon text-white-50">
-                                    <i className="fa fa-trash-alt"></i>
-                                  </span>
-                                  <span className="text"> No</span>
-                                </a>
+                            <i className="fa-solid fa-pencil"></i>
+                          </Link>
+                          <div className="btn-group dropup">
+                            <button
+                              type="button"
+                              className="btn btn-details delete"
+                              data-bs-toggle="dropdown"
+                              aria-expanded="false"
+                            >
+                              <i className="fa-regular fa-trash-can"></i>
+                            </button>
+                            <ul className="dropdown-menu">
+                              <div className="popover-content text-center">
+                                <div className="btn-User">
+                                  <a
+                                    className="btn btn-icon-split btn-success"
+                                    onClick={() =>
+                                      deleteCategory({
+                                        id,
+                                        name,
+                                        img,
+                                        departmentId,
+                                      })
+                                    }
+                                  >
+                                    <span className="icon text-white-50">
+                                      <i className="fa fa-check-square"></i>
+                                    </span>
+                                    <span className="text"> Yes</span>
+                                  </a>
+                                  <a
+                                    className="btn btn-danger btn-icon-split"
+                                    data-dismiss="confirmation"
+                                  >
+                                    <span className="icon text-white-50">
+                                      <i className="fa fa-trash-alt"></i>
+                                    </span>
+                                    <span className="text"> No</span>
+                                  </a>
+                                </div>
                               </div>
-                            </div>
-                          </ul>
+                            </ul>
+                          </div>
                         </div>
-                      </div>
-                    </td>
-                  </tr>
-                );
-              })}
+                      </td>
+                    </tr>
+                  );
+                }
+              )}
             </tbody>
           </table>
         </div>

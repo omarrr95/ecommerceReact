@@ -1,17 +1,16 @@
-:root {
+/* :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
-  /* background-color: #242424; */
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
+} */
 
 body {
   margin: 0;
@@ -168,4 +167,43 @@ body {
     right: 0;
     transition: all 0.3s;
   }
+}
+
+
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+
+@media (min-width: 993px) {
+  body:has(.app.admin-layout) {
+    margin-right: 200px !important;
+    width: calc(100% - 200px) !important;
+  }
+
+  @media only screen and (min-width: 768px) {
+    .TopHeader .right-section>ul>li>a {
+      display: none !important;
+    }
+  }
+}
+
+@media (max-width: 992px) {
+  .TopHeader {
+    margin: 0;
+    width: 100%;
+  }
+
+  .TopHeader .right-section>ul>li>a {
+    display: block !important;
+  }
+}
+
+.Sidebar.show {
+  right: 0 !important;
+}
+
+table tr {
+  text-align: center;
 }

@@ -1859,7 +1859,7 @@ input:focus {
 }
 
 .container-form-input .did-floating-label-content textarea.did-floating-input.large-input {
-    height: 80px;
+    /* height: 80px; */
     padding-top: 10px;
 }
 
@@ -2939,7 +2939,7 @@ form .avatar-upload .error {
 @media(max-width: 991px) {
     .TopHeader {
         width: 100%;
-        z-index: 9999;
+        /* z-index: 9999; */
     }
 
     .Sidebar {

@@ -1,11 +1,55 @@
 import { Link } from "react-router-dom";
+import { useEffect } from "react";
+import axios from "axios";
+import Swal from "sweetalert2";
+import { useDispatch, useSelector } from "react-redux";
+import { setProducts } from "../../redux/actions/actions";
+import { baseUrl } from "../../redux/actions";
 
 function Product() {
+  const dispatch = useDispatch();
+  const { products } = useSelector((state) => state.productsState);
+  const { categories } = useSelector((state) => state.categoriesState);
+
+  useEffect(() => {
+    // if (!products) {
+    //   fetchProducts();
+    // }
+  }, []);
+
+  function search(e) {
+    let rows = document.querySelectorAll("tbody tr");
+    rows.forEach((row) => {
+      if (row.textContent.includes(e.target.value)) {
+        row.style.display = "table-row";
+      } else {
+        row.style.display = "none";
+      }
+    });
+  }
+
+  function deleteProduct(product) {
+    axios
+      .delete(`${baseUrl}/api/Product?id=${product.id}`)
+      .then((res) => {
+        dispatch(setProducts(products.filter((el) => el.id != product.id)));
+        Swal.fire({
+          title: `تم حذف القسم ${product.name}`,
+          icon: "success",
+          timer: 3000,
+        });
+      })
+      .catch((error) => {
+        console.log(error.message);
+        Swal.fire("Something went wrong", "", "error");
+      });
+  }
+
   return (
     <div className="body-content">
       <div className="title-page">
         <div className="img-title">
-          <h5>الخدمات التصميمية </h5>
+          <h5>المنتجات</h5>
         </div>
       </div>
       <div className="box-section">
@@ -22,6 +66,7 @@ function Product() {
             placeholder="Search Here ..."
             aria-label="Recipient's username"
             aria-describedby="basic-addon2"
+            onChange={search}
           />
           <span className="input-group-text" id="basic-addon2">
             <i className="fa-solid fa-magnifying-glass"></i>
@@ -32,139 +77,89 @@ function Product() {
             <thead className="bg-light">
               <tr>
                 <th>#</th>
-                <th>صورة الخدمة</th>
-                <th>إسم الخدمة Ar</th>
-                <th>إسم الخدمة En</th>
-                <th>تفاصيل الخدمة Ar</th>
-                <th>تفاصيل الخدمة En</th>
+                <th>صورة المنتج</th>
+                <th>إسم المنتج </th>
+                <th>نوع المنتج </th>
+                <th>وصف المنتج</th>
+                <th>السعر قبل الخصم</th>
+                <th>السعر الصافى</th>
                 <th>التحكم</th>
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td className="promotion-id" scope="row">
-                  1
-                </td>
-                <td data-title="صورة الخدمة">
-                  {" "}
-                  <img width="60px" src="" />{" "}
-                </td>
-                <td data-title="إسم الخدمة Ar"> التصميم الداخلى</td>
-                <td data-title="إسم الخدمة En"> Internal Design</td>
-                <td data-title="تفاصيل الخدمة Ar">
-                  {" "}
-                  تقديم تصاميم داخلية عصرية ومتنوعة تلبى جميع الاذواق
-                </td>
-                <td data-title="تفاصيل الخدمة En">
-                  {" "}
-                  Providing modern and diverse interior designs that meet all
-                  tastes
-                </td>
+              {products?.map((product, index) => {
+                return (
+                  <tr key={product.id}>
+                    <td className="promotion-id" scope="row">
+                      {index + 1}
+                    </td>
+                    <td data-title="صورة الخدمة">
+                      <img width="60px" src={product.img} />
+                    </td>
+                    <td data-title="إسم الخدمة Ar">{product.name}</td>
+                    <td data-title="إسم الخدمة En">
+                      {
+                        categories?.find((el) => el.id == product.categoriesId)
+                          .name
+                      }
+                    </td>
+                    <td>{product.description}</td>
+                    <td>
+                      {product.hasDiscount ? (
+                        <del>{product.priceBeforeDiscount}</del>
+                      ) : (
+                        product.priceBeforeDiscount
+                      )}
+                    </td>
+                    <td>{product.price}</td>
 
-                <td className="control-btn">
-                  <div className="d-flex">
-                    <a
-                      className="btn btn-details edit"
-                      href="/Categories/FormEdit/1"
-                    >
-                      <i className="fa-solid fa-pencil"></i>
-                    </a>
-                    <div className="btn-group dropup">
-                      <button
-                        type="button"
-                        className="btn btn-details delete"
-                        data-bs-toggle="dropdown"
-                        aria-expanded="false"
-                      >
-                        <i className="fa-regular fa-trash-can"></i>
-                      </button>
-                      <ul className="dropdown-menu">
-                        <div className="popover-content text-center">
-                          <div className="btn-User">
-                            <a className="btn btn-icon-split btn-success">
-                              <span className="icon text-white-50">
-                                <i className="fa fa-check-square"></i>
-                              </span>
-                              <span className="text"> Yes</span>
-                            </a>
-                            <a
-                              className="btn btn-danger btn-icon-split"
-                              data-dismiss="confirmation"
-                            >
-                              <span className="icon text-white-50">
-                                <i className="fa fa-trash-alt"></i>
-                              </span>
-                              <span className="text"> No</span>
-                            </a>
-                          </div>
+                    <td className="control-btn">
+                      <div className="d-flex">
+                        <Link
+                          className="btn btn-details edit"
+                          to={`/product/edit/${product.id}`}
+                        >
+                          <i className="fa-solid fa-pencil"></i>
+                        </Link>
+                        <div className="btn-group dropup">
+                          <button
+                            type="button"
+                            className="btn btn-details delete"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false"
+                          >
+                            <i className="fa-regular fa-trash-can"></i>
+                          </button>
+                          <ul className="dropdown-menu">
+                            <div className="popover-content text-center">
+                              <div className="btn-User">
+                                <a
+                                  className="btn btn-icon-split btn-success"
+                                  onClick={() => deleteProduct(product)}
+                                >
+                                  <span className="icon text-white-50">
+                                    <i className="fa fa-check-square"></i>
+                                  </span>
+                                  <span className="text"> Yes</span>
+                                </a>
+                                <a
+                                  className="btn btn-danger btn-icon-split"
+                                  data-dismiss="confirmation"
+                                >
+                                  <span className="icon text-white-50">
+                                    <i className="fa fa-trash-alt"></i>
+                                  </span>
+                                  <span className="text"> No</span>
+                                </a>
+                              </div>
+                            </div>
+                          </ul>
                         </div>
-                      </ul>
-                    </div>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td className="promotion-id" scope="row">
-                  2
-                </td>
-                <td data-title="صورة الخدمة">
-                  {" "}
-                  <img width="60px" src="/assets/img/calculator.svg" />{" "}
-                </td>
-                <td data-title="إسم الخدمة Ar"> المخططات التنفيذية</td>
-                <td data-title="إسم الخدمة En"> Executive plans</td>
-                <td data-title="تفاصيل الخدمة Ar">
-                  {" "}
-                  عداد مخططات تنفيذية دقيقة وشاملة لكل مشروع
-                </td>
-                <td data-title="تفاصيل الخدمة En">
-                  {" "}
-                  Preparing accurate and comprehensive implementation plans for
-                  each project
-                </td>
-
-                <td className="control-btn">
-                  <div className="d-flex">
-                    <a
-                      className="btn btn-details edit"
-                      href="/Categories/FormEdit/2"
-                    >
-                      <i className="fa-solid fa-pencil"></i>
-                    </a>
-                    <div className="btn-group dropup">
-                      <button
-                        type="button"
-                        className="btn btn-details delete"
-                        data-bs-toggle="dropdown"
-                        aria-expanded="false"
-                      >
-                        <i className="fa-regular fa-trash-can"></i>
-                      </button>
-                      <ul className="dropdown-menu">
-                        <div className="popover-content text-center">
-                          <div className="btn-User">
-                            <a className="btn btn-icon-split btn-success">
-                              <span className="icon text-white-50">
-                                <i className="fa fa-check-square"></i>
-                              </span>
-                              <span className="text"> Yes</span>
-                            </a>
-                            <a
-                              className="btn btn-danger btn-icon-split"
-                              data-dismiss="confirmation"
-                            >
-                              <span className="icon text-white-50">
-                                <i className="fa fa-trash-alt"></i>
-                              </span>
-                              <span className="text"> No</span>
-                            </a>
-                          </div>
-                        </div>
-                      </ul>
-                    </div>
-                  </div>
-                </td>
-              </tr>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>

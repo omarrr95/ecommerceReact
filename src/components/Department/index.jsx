@@ -1,11 +1,13 @@
 import axios from "axios";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
-import { useAppContext } from "../../context/appContext";
+import { useDispatch, useSelector } from "react-redux";
+import { setDepartments } from "../../redux/actions/actions";
+import { baseUrl } from "../../redux/actions";
 
 function Department() {
-  const { baseUrl, departments, setDepartments, fetchDepartments } =
-    useAppContext();
+  const dispatch = useDispatch();
+  const { departments } = useSelector((state) => state.departmentsState);
 
   function search(e) {
     let rows = document.querySelectorAll("tbody tr");
@@ -22,7 +24,9 @@ function Department() {
     axios
       .delete(`${baseUrl}/api/Departments?id=${department.id}`)
       .then((res) => {
-        setDepartments(departments.filter((el) => el.id != department.id));
+        dispatch(
+          setDepartments(departments.filter((el) => el.id != department.id))
+        );
         Swal.fire({
           title: `تم حذف القسم ${department.name}`,
           icon: "success",

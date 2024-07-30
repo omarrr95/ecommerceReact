@@ -1,5 +1,6 @@
 #root {
   width: 100%;
+  padding-top: 30px;
 }
 
 .preview-container {
@@ -22,12 +23,79 @@
 }
 
 .btn {
-  transition: .3s scale !important;
+  transition: .3s !important;
+  border: 1px solid transparent !important;
 }
 
 .btn:hover {
   background-color: transparent !important;
   color: black !important;
   border: 1px solid black !important;
-  scale: 1.1;
 }
+
+.btn-outline-dark:hover {
+  background-color: black !important;
+  color: white !important;
+}
+
+/* ************************************************* */
+
+
+
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #333;
+  box-shadow: 0 0 10px 10px #333;
+}
+
+::-webkit-scrollbar-track {
+  box-shadow: 0 0 10px inset;
+}
+
+.navbar .navbar-toggler {
+  transition: .3s;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.navbar .navbar-toggler:hover {
+  box-shadow: 0 0 10px #333 !important;
+}
+
+.home {
+  background-color: #333;
+  height: calc(100vh - 63px);
+  text-align: left;
+}
+
+.home .card {
+  position: relative;
+  height: 100%;
+}
+
+.home .card::before {
+  content: '';
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  background-color: rgba(0 0 0 /.35);
+}
+
+.home img {
+  width: 100%;
+  height: 100% !important;
+}
+
+.products .card {
+  transition: .3s;
+}
+
+.products .card:hover {
+  background-color: #eee;
+}
+
+/* ************************************************* */

@@ -1,11 +1,13 @@
-import "./Navbar.css";
-
 function Navbar() {
   return (
     <header className="TopHeader">
       <div className="right-section">
         <ul>
-          <li>
+          <li
+            onClick={() => {
+              document.querySelector(".Sidebar").classList.toggle("show");
+            }}
+          >
             <a>
               <i className="fas fa-indent"></i>
             </a>
@@ -23,12 +25,12 @@ function Navbar() {
               aria-expanded="false"
             >
               <img src="/assets/img/user.png" />
-              <span>naser ElDin</span>
+              <span>Username</span>
             </button>
             <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton2">
               <li>
                 <a className="dropdown-item" href="/Home/Logout">
-                  <img src="assets/img/logout.png" />
+                  <img src="/assets/img/logout.png" />
                   تسجيل الخروج
                 </a>
               </li>

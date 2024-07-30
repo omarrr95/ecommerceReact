@@ -14,7 +14,7 @@ function Sidebar() {
             <ul className="no-style">
               <li>
                 <Link
-                  className="Home-link sidebar-icon-img"
+                  className="Home-link sidebar-icon-img border-bottom"
                   to="/department/index"
                 >
                   <img src="/assets/img/3d-house.png" />
@@ -28,23 +28,31 @@ function Sidebar() {
                     </Link>
                   </li>
                   <li>
-                    <Link to="/product/index">
+                    <Link to="/brand/index">
                       <img src="/assets/img/user2.png" />
+                      <span>الماركات</span>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/product/index">
+                      <img src="/assets/img/about.png" />
                       <span>المنتجات</span>
                     </Link>
                   </li>
-                  {/* <li>
-                    <a href="/CategoriesImplement/Index">
-                      <img src="/assets/img/user2.png" />
-                      <span>الخدمات التنفيذية</span>
-                    </a>
+                  <li>
+                    <Link to="/productUnit/index">
+                      <img src="/assets/img/customer.png" />
+                      <span>الوحدات</span>
+                    </Link>
                   </li>
                   <li>
-                    <a href="/AdminAboutUs/FormEdit/2">
-                      <img src="/assets/img/about.png" />
-                      <span>عن ألما</span>
-                    </a>
+                    <Link to="/color/index">
+                      <img src="/assets/img/project.png" />
+                      <span>الالوان</span>
+                    </Link>
                   </li>
+                  {/* 
+                  
                   <li>
                     <a href="/AdminWhyUs/FormEdit/3">
                       <img src="/assets/img/customer.png" />
