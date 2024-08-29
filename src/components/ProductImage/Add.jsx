@@ -4,33 +4,34 @@ import { useNavigate, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import { useDispatch, useSelector } from "react-redux";
 import * as all from "../../redux/actions/actions";
-import { fetchDepartments, baseUrl, handleUpload } from "../../redux/actions";
-import Sidebar from "../Sidebar";
+import { fetchProductImages, baseUrl, handleUpload } from "../../redux/actions";
 import Navbar from "../Navbar";
+import Sidebar from "../Sidebar";
 
-function AddDepartment() {
+function AddProductImage() {
   const [image, setImage] = useState(null);
-  const [name, setName] = useState("");
+  const [productId, setProductId] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [isDisabled, setIsDisabled] = useState(false);
 
   const navigate = useNavigate();
-  const { deptID } = useParams();
+  const { imageID } = useParams();
 
   const dispatch = useDispatch();
-  const { departments } = useSelector((state) => state.departmentsState);
+  const { productImages } = useSelector((state) => state.productImagesState);
+  const { products } = useSelector((state) => state.productsState);
 
   useEffect(() => {
-    if (deptID && departments) {
-      let department = departments?.find((el) => el.id == deptID);
-      setName(department.name);
-      setImage(department.img);
+    if (imageID && productImages) {
+      let productImage = productImages?.find((el) => el.id == imageID);
+      setProductId(productImage.productId);
+      setImage(productImage.images);
       document.querySelector(".upload-img").classList.add("active");
     }
-  }, [departments, deptID]);
+  }, [productImages, imageID]);
 
-  function addNewDepartment() {
-    if (!image || !name) {
+  function addNewProductImage() {
+    if (!image || !productId) {
       Swal.fire({
         title: "ادخل البيانات",
         icon: "error",
@@ -41,14 +42,14 @@ function AddDepartment() {
 
     setIsDisabled(true);
 
-    if (deptID && typeof image === "string") {
+    if (imageID && typeof image === "string") {
       let data = {
-        id: +deptID,
-        name,
-        img: image,
+        id: +imageID,
+        productId,
+        images: image,
       };
 
-      updateDepartments(data);
+      updateProductImages(data);
       return;
     }
 
@@ -56,27 +57,29 @@ function AddDepartment() {
     reader.readAsDataURL(image);
     reader.onload = () => {
       let data = {
-        name: name,
-        img: reader.result,
+        productId: +productId,
+        images: reader.result,
       };
 
-      if (deptID) {
-        updateDepartments({ ...data, id: +deptID });
+      if (imageID) {
+        updateProductImages({ ...data, id: +imageID });
         return;
       }
 
+      console.log("Data", data);
+
       axios
-        .post(`${baseUrl}/api/Departments`, data)
+        .post(`${baseUrl}/api/ProductImage`, data)
         .then((res) => {
           Swal.fire({
-            title: `تم اضافة القسم ${name}`,
+            title: `تم اضافة القسم ${productId}`,
             icon: "success",
             timer: 3000,
           });
 
-          dispatch(fetchDepartments());
+          dispatch(fetchProductImages());
           clearInputs();
-          navigate("/dashboard/department/index");
+          navigate("/dashboard/productImage/index");
         })
         .catch((err) => {
           setIsDisabled(false);
@@ -85,22 +88,22 @@ function AddDepartment() {
     };
   }
 
-  function updateDepartments(data) {
+  function updateProductImages(data) {
     axios
-      .put(`${baseUrl}/api/Departments?id=${deptID}`, data)
+      .put(`${baseUrl}/api/ProductImage?id=${imageID}`, data)
       .then((res) => {
         Swal.fire({
-          title: `تم تعديل القسم ${name}`,
+          title: `تم تعديل القسم ${productId}`,
           icon: "success",
           timer: 3000,
         });
         dispatch(
-          all.setDepartments(
-            departments.map((el) => (el.id == deptID ? data : el))
+          all.setProductImages(
+            productImages.map((el) => (el.id == imageID ? data : el))
           )
         );
         clearInputs();
-        navigate("/dashboard/department/index");
+        navigate("/dashboard/productImage/index");
       })
       .catch((err) => {
         setIsDisabled(false);
@@ -109,7 +112,7 @@ function AddDepartment() {
   }
 
   function clearInputs() {
-    setName("");
+    setProductId("");
     setImage(null);
     document.getElementById("file-upload").value = "";
     document.querySelector(".upload-img").classList.remove("active");
@@ -122,12 +125,12 @@ function AddDepartment() {
       <div className="body-content">
         <div className="title-page">
           <div className="img-title">
-            <h5>تعديل الأقسام</h5>
+            <h5>تعديل صور المنتج</h5>
           </div>
           <h4
             className="p-2 text-white"
             style={{ cursor: "pointer" }}
-            onClick={() => navigate("/dashboard/department/index")}
+            onClick={() => navigate("/dashboard/productImage/index")}
           >
             <i className="fa-solid fa-arrow-left"></i>
           </h4>
@@ -160,7 +163,7 @@ function AddDepartment() {
                     name="file-upload"
                     className="fileInput"
                     accept=".png,.jpeg,.jpg"
-                    data-name={image?.name || ""}
+                    data-name={image?.productId || ""}
                     onChange={(e) => {
                       setImage(e.target.files[0]);
                       handleUpload(e.target.files[0]);
@@ -176,8 +179,8 @@ function AddDepartment() {
                     style={{ display: "none" }}
                   >
                     <div className="control-image-upload-container">
-                      <div className="file-name">
-                        <span> {image?.name || name} </span>
+                      <div className="file-productId">
+                        <span> {image?.name || " منتج " + productId} </span>
                       </div>
                       <div className="actions">
                         <i
@@ -210,7 +213,7 @@ function AddDepartment() {
                         <div className="preview-container-img">
                           <img
                             src={
-                              typeof image === "string" && deptID
+                              typeof image === "string" && imageID
                                 ? image
                                 : URL.createObjectURL(image)
                             }
@@ -227,18 +230,21 @@ function AddDepartment() {
             <div className="col-md-3 col-sm-6 ">
               <div className="container-form-input input-label">
                 <div className="did-floating-label-content">
-                  <input
+                  <select
                     className="did-floating-input w-100 large-input form-control  lang-en"
-                    required=""
-                    type="text"
-                    data-val="true"
-                    data-val-required="The name field is required."
-                    id="name"
-                    name="Name"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                  />
-                  <label className="did-floating-label"> الاسم </label>
+                    id="productId"
+                    name="Product ID"
+                    value={productId}
+                    onChange={(e) => setProductId(e.target.value)}
+                  >
+                    <option value="">اختر منتج</option>
+                    {products?.map((el) => (
+                      <option value={el.id} key={el.id}>
+                        {el.name}
+                      </option>
+                    ))}
+                  </select>
+                  <label className="did-floating-label"> المنتج </label>
                   <span
                     className="text-danger field-validation-valid"
                     data-valmsg-for="Phone"
@@ -254,7 +260,7 @@ function AddDepartment() {
                 <button
                   type="button"
                   className="btn btn-theme add-car"
-                  onClick={addNewDepartment}
+                  onClick={addNewProductImage}
                   disabled={isDisabled}
                 >
                   {isDisabled ? (
@@ -272,4 +278,4 @@ function AddDepartment() {
   );
 }
 
-export default AddDepartment;
+export default AddProductImage;

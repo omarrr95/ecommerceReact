@@ -1,0 +1,130 @@
+.product-card {
+  border: 1px solid #DDD;
+  overflow: hidden;
+  position: relative;
+  border-radius: 8px;
+}
+
+.product-card:hover .image img {
+  scale: 1.1;
+  cursor: pointer;
+}
+
+.product-card:hover .image ul {
+  bottom: 10px;
+}
+
+.product-card .image {
+  position: relative;
+  overflow: hidden;
+}
+
+.product-card .image img {
+  width: 100%;
+  height: 100%;
+  transition: .5s;
+}
+
+.product-card .image ul {
+  position: absolute;
+  width: 100%;
+  bottom: -80px;
+  left: 0;
+  margin: 0;
+  padding: 0;
+  transition: .5s;
+}
+
+.product-card .image ul li {
+  background-color: #FFF;
+  border: 1px solid #DDD;
+  padding: 8px;
+  width: 35px;
+  height: 35px;
+  line-height: 20px;
+  border-radius: 8px;
+  text-align: center;
+  cursor: pointer;
+  transition: .5s;
+}
+
+.product-card .image ul li:hover {
+  background-color: #0075ff;
+  border-color: #0075ff;
+  color: white;
+}
+
+.product-card .content {
+  padding: 20px;
+  border-top: 1px solid #DDD;
+}
+
+.product-card .content .category span {
+  color: #666;
+  font-size: 15px;
+}
+
+.product-card .content .category .rate {
+  font-size: 14px;
+
+  .yellow {
+    color: orange;
+  }
+
+  .grey {
+    color: grey;
+  }
+}
+
+.product-card .content .title {
+  color: black;
+  font-weight: lighter;
+  cursor: pointer;
+  transition: .3s;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.product-card .content .title:hover {
+  color: #0075ff;
+}
+
+.product-card .content .pricing {
+  color: #777;
+
+  .price {
+    font-weight: bold;
+    font-size: 15px;
+
+    del {
+      font-weight: normal;
+      font-size: 14px;
+    }
+  }
+}
+
+/* Product View */
+.product-view .product-card {
+  border-radius: 8px 8px 0 0 !important;
+}
+
+.product-view .product-images {
+  margin-top: 10px;
+  flex-wrap: wrap;
+  /* overflow-x: scroll; */
+}
+
+.product-view .product-images img {
+  width: 20%;
+  aspect-ratio: 1 / 1;
+  aspect-ratio: 1;
+  max-width: 100%;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: .3s;
+}
+
+.product-view .product-images img:hover {
+  scale: .97;
+}

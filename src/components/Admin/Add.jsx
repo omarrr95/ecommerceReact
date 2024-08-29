@@ -1,37 +1,45 @@
-import axios from "axios";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
+import Navbar from "../Navbar";
+import Sidebar from "../Sidebar";
+import { baseUrl } from "../../redux/actions";
 import { useNavigate, useParams } from "react-router-dom";
+import axios from "axios";
 import Swal from "sweetalert2";
-import { useDispatch, useSelector } from "react-redux";
-import { setProductUnits } from "../../redux/actions/actions.js";
-import { baseUrl, fetchProductUnits } from "../../redux/actions/index.js";
-import Navbar from "../Navbar.jsx";
-import Sidebar from "../Sidebar.jsx";
 
-function AddProductUnit() {
+function AddAdmin() {
   const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [productId, setProductId] = useState("");
+  const [userName, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [isSuperAdmin, setIsSuperAdmin] = useState("0");
   const [isDisabled, setIsDisabled] = useState(false);
 
-  const navigate = useNavigate();
-  const { unitID } = useParams();
+  const [admins, setAdmins] = useState([]);
+  const { adminID } = useParams();
 
-  const dispatch = useDispatch();
-  const { productUnits } = useSelector((state) => state.productUnitsState);
-  const { products } = useSelector((state) => state.productsState);
+  const navigate = useNavigate();
+
+  function fetchAdmins() {
+    axios.get(`${baseUrl}/api/Admins`).then((res) => {
+      setAdmins(res.data);
+    });
+  }
+  useEffect(() => {
+    fetchAdmins();
+  }, []);
 
   useEffect(() => {
-    if (unitID && productUnits) {
-      let productUnit = productUnits?.find((el) => el.id == unitID);
-      setName(productUnit.name);
-      setDescription(productUnit.description);
-      setProductId(productUnit.productId);
-    }
-  }, [productUnits, unitID]);
+    if (adminID && admins.length > 0) {
+      let admin = admins?.find((el) => el.id == adminID);
 
-  function addNewProductUnit() {
-    if (!description || !name || !productId) {
+      setName(admin.name);
+      setUsername(admin.userName);
+      setPassword(admin.password);
+      setIsSuperAdmin(admin.superAdmin ? "1" : "0");
+    }
+  }, [admins, adminID]);
+
+  function addNewAdmin() {
+    if (!name || !userName || !password) {
       Swal.fire({
         title: "ادخل البيانات",
         icon: "error",
@@ -43,53 +51,26 @@ function AddProductUnit() {
 
     let data = {
       name,
-      description,
-      productId,
+      userName,
+      password,
+      superAdmin: +isSuperAdmin ? true : false,
     };
 
-    if (unitID) {
-      updateProductUnit({ ...data, id: +unitID });
+    if (adminID) {
+      updateAdmins({ ...data, id: +adminID });
       return;
     }
 
-    console.log("POST", data);
-
     axios
-      .post(`${baseUrl}/api/ProductUnit`, data)
+      .post(`${baseUrl}/api/Admins`, data)
       .then((res) => {
-        console.log(res);
         Swal.fire({
-          title: `تم اضافة الوحده ${name}`,
+          title: `تم اضافة المسئول ${data.name}`,
           icon: "success",
           timer: 3000,
         });
-        dispatch(fetchProductUnits());
         clearInputs();
-        navigate("/dashboard/productUnit/index");
-      })
-      .catch((err) => {
-        console.log("TheError", err, err.message);
-        setIsDisabled(false);
-        Swal.fire("حدث خطأ", "", "error");
-      });
-  }
-
-  function updateProductUnit(data) {
-    axios
-      .put(`${baseUrl}/api/ProductUnit?id=${unitID}`, data)
-      .then((res) => {
-        Swal.fire({
-          title: `تم تعديل الوحده ${name}`,
-          icon: "success",
-          timer: 3000,
-        });
-        dispatch(
-          setProductUnits(
-            productUnits.map((el) => (el.id == unitID ? data : el))
-          )
-        );
-        clearInputs();
-        navigate("/dashboard/productUnit/index");
+        navigate("/dashboard/admin/index");
       })
       .catch((err) => {
         setIsDisabled(false);
@@ -97,10 +78,21 @@ function AddProductUnit() {
       });
   }
 
-  function clearInputs() {
-    setName("");
-    setDescription("");
-    setProductId("");
+  function updateAdmins(data) {
+    axios
+      .put(`${baseUrl}/api/Admins?id=${adminID}`, data)
+      .then((res) => {
+        Swal.fire({
+          title: `تم تعديل المسئول ${data.name}`,
+          icon: "success",
+          timer: 3000,
+        });
+        navigate("/dashboard/admin/index");
+      })
+      .catch((err) => {
+        setIsDisabled(false);
+        Swal.fire("حدث خطأ", "", "error");
+      });
   }
 
   return (
@@ -110,12 +102,12 @@ function AddProductUnit() {
       <div className="body-content">
         <div className="title-page">
           <div className="img-title">
-            <h5>تعديل الوحدات</h5>
+            <h5>تعديل الأنواع</h5>
           </div>
           <h4
             className="p-2 text-white"
             style={{ cursor: "pointer" }}
-            onClick={() => navigate("/dashboard/productUnit/index")}
+            onClick={() => navigate("/dashboard/admin/index")}
           >
             <i className="fa-solid fa-arrow-left"></i>
           </h4>
@@ -127,7 +119,7 @@ function AddProductUnit() {
                 <section>
                   <div className="section-head">
                     <span></span>
-                    الوحدات
+                    البيانات الرئيسية
                   </div>
                 </section>
               </div>
@@ -155,6 +147,7 @@ function AddProductUnit() {
                 </div>
               </div>
             </div>
+
             <div className="col-md-3 col-sm-6 ">
               <div className="container-form-input input-label">
                 <div className="did-floating-label-content">
@@ -163,15 +156,37 @@ function AddProductUnit() {
                     type="text"
                     data-val="true"
                     data-val-required="The Phone field is required."
-                    id="description"
-                    name="Description"
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
+                    id="password"
+                    name="password"
+                    value={userName}
+                    onChange={(e) => setUsername(e.target.value)}
                   />
-                  <label className="did-floating-label"> الوصف </label>
+                  <label className="did-floating-label"> اسم المستخدم </label>
                   <span
                     className="text-danger field-validation-valid"
-                    data-valmsg-for="description"
+                    data-valmsg-for="password"
+                    data-valmsg-replace="true"
+                  ></span>
+                </div>
+              </div>
+            </div>
+            <div className="col-md-3 col-sm-6 ">
+              <div className="container-form-input input-label">
+                <div className="did-floating-label-content">
+                  <input
+                    className="did-floating-input w-100 large-input form-control  lang-en"
+                    type="text"
+                    data-val="true"
+                    data-val-required="The Phone field is required."
+                    id="password"
+                    name="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                  <label className="did-floating-label"> كلمه السر </label>
+                  <span
+                    className="text-danger field-validation-valid"
+                    data-valmsg-for="password"
                     data-valmsg-replace="true"
                   ></span>
                 </div>
@@ -182,25 +197,19 @@ function AddProductUnit() {
               <div className="container-form-input input-label">
                 <div className="did-floating-label-content">
                   <select
-                    className="did-floating-input w-100 large-input form-control"
-                    id="collection"
-                    name="collection"
-                    value={productId}
-                    onChange={(e) => setProductId(e.target.value)}
+                    className="did-floating-input w-100 large-input form-control  lang-en"
+                    id="isSuperAdmin"
+                    name="isSuperAdmin"
+                    value={isSuperAdmin}
+                    onChange={(e) => setIsSuperAdmin(e.target.value)}
                   >
-                    <option value="">إختر المنتج</option>
-                    {products?.map(({ id, name }) => {
-                      return (
-                        <option value={id} key={id}>
-                          {name}
-                        </option>
-                      );
-                    })}
+                    <option value="0">لا</option>
+                    <option value="1">نعم</option>
                   </select>
-                  <label className="did-floating-label">المنتج </label>
+                  <label className="did-floating-label">سوبر أدمن؟</label>
                   <span
                     className="text-danger field-validation-valid"
-                    data-valmsg-for="Location_ar"
+                    data-valmsg-for="discount"
                     data-valmsg-replace="true"
                   ></span>
                 </div>
@@ -214,7 +223,7 @@ function AddProductUnit() {
                   type="button"
                   className="btn btn-theme add-car"
                   disabled={isDisabled}
-                  onClick={addNewProductUnit}
+                  onClick={addNewAdmin}
                 >
                   {isDisabled ? (
                     <span className="spinner-border"></span>
@@ -231,4 +240,4 @@ function AddProductUnit() {
   );
 }
 
-export default AddProductUnit;
+export default AddAdmin;

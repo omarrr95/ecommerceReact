@@ -48,3 +48,30 @@ export const setColors = (payload) => {
     colors: payload,
   };
 };
+
+export const setProductImages = (payload) => {
+  return {
+    type: types.SET_PRODUCT_IMAGES,
+    productImages: payload,
+  };
+};
+
+export const setCart = (payload) => {
+  return {
+    type: types.SET_CART,
+    cart: payload,
+  };
+};
+
+export const setAdmin = (payload) => {
+  return {
+    type: types.SET_ADMIN,
+    admin: payload,
+  };
+};
+export const setAdmins = (payload) => {
+  return {
+    type: types.SET_ADMINS,
+    admins: payload,
+  };
+};

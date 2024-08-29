@@ -1,15 +1,28 @@
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import { useDispatch, useSelector } from "react-redux";
-import { setDepartments } from "../../redux/actions/actions";
+import { setProductImages } from "../../redux/actions/actions";
 import { baseUrl } from "../../redux/actions";
+import { useEffect, useState } from "react";
 import Navbar from "../Navbar";
 import Sidebar from "../Sidebar";
 
-function Department() {
+function ProductImage() {
   const dispatch = useDispatch();
-  const { departments } = useSelector((state) => state.departmentsState);
+  const { productImages } = useSelector((state) => state.productImagesState);
+  const { products } = useSelector((state) => state.productsState);
+
+  let { productID } = useParams();
+  const [images, setImages] = useState([]);
+
+  console.log("PRODUCTS", products);
+  useEffect(() => {
+    setImages(productImages);
+    if (productID) {
+      setImages(productImages?.filter((el) => el.productId == productID) || []);
+    }
+  }, [productImages, productID]);
 
   function search(e) {
     let rows = document.querySelectorAll("tbody tr");
@@ -22,15 +35,17 @@ function Department() {
     });
   }
 
-  function deleteDepartment(department) {
+  function deleteProductImage(productImage) {
     axios
-      .delete(`${baseUrl}/api/Departments?id=${department.id}`)
+      .delete(`${baseUrl}/api/ProductImage?id=${productImage.id}`)
       .then((res) => {
         dispatch(
-          setDepartments(departments.filter((el) => el.id != department.id))
+          setProductImages(
+            productImages.filter((el) => el.id != productImage.id)
+          )
         );
         Swal.fire({
-          title: `تم حذف القسم ${department.name}`,
+          title: `تم حذف صوره المنتج ${productImage.id}`,
           icon: "success",
           timer: 3000,
         });
@@ -47,12 +62,12 @@ function Department() {
       <div className="body-content">
         <div className="title-page">
           <div className="img-title">
-            <h5>الأقسام</h5>
+            <h5>صور المنتج</h5>
           </div>
         </div>
         <div className="box-section">
           <div className="col-md-12 text-end mb-3 px-3 pt-3">
-            <Link className="btn btn-theme" to="/dashboard/department/add">
+            <Link className="btn btn-theme" to="/dashboard/productImage/add">
               إضافة قسم جديد
             </Link>
           </div>
@@ -75,28 +90,33 @@ function Department() {
               <thead className="bg-light">
                 <tr>
                   <th>#</th>
-                  <th>صوره القسم</th>
-                  <th>اسم القسم</th>
+                  <th>صوره المنتج</th>
+                  <th>اسم المنتج</th>
                   <th>التحكم</th>
                 </tr>
               </thead>
               <tbody>
-                {departments?.map((department, index) => {
+                {images?.map((productImage, index) => {
                   return (
-                    <tr key={department.id}>
+                    <tr key={productImage.id}>
                       <td className="promotion-id" scope="row">
                         {index + 1}
                       </td>
                       <td data-title="صورة الخدمة">
-                        <img width="60px" src={department.img} />
+                        <img width="60px" src={productImage.images} />
                       </td>
-                      <td data-title="إسم الخدمة Ar"> {department.name}</td>
+                      <td data-title="إسم الخدمة Ar">
+                        {
+                          products.find((el) => el.id == productImage.productId)
+                            ?.name
+                        }
+                      </td>
 
                       <td className="control-btn">
                         <div className="d-flex">
                           <Link
                             className="btn btn-details edit"
-                            to={`/dashboard/department/edit/${department.id}`}
+                            to={`/dashboard/productImage/edit/${productImage.id}`}
                           >
                             <i className="fa-solid fa-pencil"></i>
                           </Link>
@@ -114,7 +134,9 @@ function Department() {
                                 <div className="btn-User">
                                   <a
                                     className="btn btn-icon-split btn-success"
-                                    onClick={() => deleteDepartment(department)}
+                                    onClick={() =>
+                                      deleteProductImage(productImage)
+                                    }
                                   >
                                     <span className="icon text-white-50">
                                       <i className="fa fa-check-square"></i>
@@ -148,4 +170,4 @@ function Department() {
   );
 }
 
-export default Department;
+export default ProductImage;

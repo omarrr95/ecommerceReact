@@ -1,0 +1,32 @@
+.products-filter {
+  background-color: #f8f8fb;
+  border: 1px solid #EEE;
+  border-radius: 18px;
+  padding: 15px 0;
+}
+
+.products-filter .subject {
+  padding: 15px;
+  color: #666;
+}
+
+.products-filter .subject h5 {
+  color: black;
+}
+
+.products-filter .subject:not(:last-child) {
+  border-bottom: 1px solid #EEE;
+}
+
+.products-filter .subject>h5 {
+  margin-bottom: 15px;
+}
+
+.products-filter .subject .color {
+  margin: 0;
+  padding: 0;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  cursor: pointer;
+}

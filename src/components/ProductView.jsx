@@ -1,23 +1,41 @@
-import React, { useEffect, useState } from "react";
+import "./ProductView.css";
+import React, { useState } from "react";
 import Skeleton from "react-loading-skeleton";
-import { Link, useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
+import ProductsFilters from "./ProductsFilters";
+import { decreaseQuantity, increaseQuantity } from "../redux/actions";
 
 function ProductView() {
   const { id } = useParams();
-  const [product, setProduct] = useState([]);
+  // const [product, setProduct] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    getProduct();
-  }, []);
+  const { products } = useSelector((state) => state.productsState);
+  const { categories } = useSelector((state) => state.categoriesState);
+  const { productImages } = useSelector((state) => state.productImagesState);
+  const { cart } = useSelector((state) => state.cartState);
+  const product = products?.find((product) => product.id == id);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-  const getProduct = async () => {
-    setLoading(true);
-    const response = await fetch(`https://fakestoreapi.com/products/${id}`);
-    const data = await response.json();
-    setProduct(data);
-    setLoading(false);
-  };
+  function selectImage(e) {
+    document.querySelector(".mainImage img").src = e.target.src;
+    document.querySelector(".thumbnail img.active").classList.remove("active");
+    e.target.classList.add("active");
+  }
+
+  function handleMouseMove(e) {
+    const containerWidth = e.target.parentElement.offsetWidth;
+    const containerHeight = e.target.parentElement.offsetHeight;
+    const scale = 3;
+    const x = e.pageX - e.target.parentElement.offsetLeft;
+    const y = e.pageY - e.target.parentElement.offsetTop;
+    const translateX = (containerWidth / 2 - x) * 2;
+    const translateY = (containerHeight / 2 - y) * 2;
+
+    e.target.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
+  }
 
   const Loading = () => {
     return (
@@ -41,38 +59,107 @@ function ProductView() {
   };
 
   const showProducts = () => {
+    if (!product) return;
+
     return (
       <>
-        <div className="col-md-6 px-3 ">
-          <img
-            src={product.image}
-            alt={product.title}
-            className="img-fluid"
-            style={{ width: "400px", height: "400px" }}
-          />
-        </div>
-        <div className="col-md-6 ">
-          <h4 className="text-uppercase text-black-50">{product.category}</h4>
-          <h2 className="display-6">{product.title}</h2>
-          <div className="fs-4">
-            Rating: {product.rating && product.rating.rate}
-            <i className="ms-1 fa fa-star"></i>
+        {/* <div className="col-12 col-lg-3">
+          <ProductsFilters />
+        </div> */}
+        <div className="col-12 col-lg-7">
+          <div className="wrapper border flex-column-reverse flex-md-row">
+            <section className="thumbnail">
+              <div className="thumbnailBox">
+                <img
+                  onClick={selectImage}
+                  src={product.img}
+                  className="active border"
+                />
+              </div>
+
+              {productImages
+                .filter((el) => el.productId == product.id)
+                ?.map((el) => (
+                  <div key={el.id} className="thumbnailBox">
+                    <img
+                      src={el.images}
+                      className="border"
+                      onClick={selectImage}
+                    />
+                  </div>
+                ))}
+            </section>
+
+            <section className="mainImage">
+              <img
+                src={product.img}
+                className="active border"
+                onMouseMove={handleMouseMove}
+                onMouseLeave={(e) =>
+                  (e.target.style.transform = "translate(0%, 0%) scale(1)")
+                }
+              />
+            </section>
           </div>
-          <h3 className="display-6 fw-bold my-3">${product.price}</h3>
-          <p className="lead my-3">{product.description}</p>
-          <button className="btn btn-outline-dark mx-2">Add to Cart</button>
-          <Link to="/cart" className="btn btn-dark">
-            Go to Cart
-          </Link>
+        </div>
+        <div className="col-12 col-lg-5">
+          <div className="content p-2">
+            <h3 className="title ">{product.name}</h3>
+            <h4 className="text-muted mb-3">
+              {categories?.find((cat) => cat.id == product.categoriesId).name}
+            </h4>
+
+            <h5 className="price text-secondary">
+              ${product.price} &nbsp;{" "}
+              {product.hasDiscount && <del>${product.priceBeforeDiscount}</del>}
+            </h5>
+            <div className="rating my-3">
+              <i className="fa fa-star yellow"></i>
+              <i className="fa fa-star yellow"></i>
+              <i className="fa fa-star yellow"></i>
+              <i className="fa fa-star yellow"></i>
+              <i className="fa fa-star grey"></i>
+              <span> | 900 Ratings</span>
+            </div>
+            <p
+              className="description text-secondary"
+              dangerouslySetInnerHTML={{ __html: product.description }}
+            ></p>
+          </div>
+          <div className="cart-btns justify-content-center justify-content-lg-start">
+            <div className="btns-group">
+              <button
+                className="plus"
+                onClick={() => dispatch(increaseQuantity({ cart, product }))}
+              >
+                +
+              </button>
+              <span>
+                {cart?.find((item) => item.id == product.id)?.quantity || 0}
+              </span>
+              <button
+                className="minus"
+                onClick={() => dispatch(decreaseQuantity({ cart, product }))}
+              >
+                -
+              </button>
+            </div>
+            <button
+              className="btn btn-primary"
+              onClick={() => navigate("/cart")}
+            >
+              View Cart
+            </button>
+          </div>
         </div>
       </>
     );
   };
 
   return (
-    <div className="product py-5 bg-white">
+    <div className="product-view py-4">
       <div className="container">
-        <div className="row g-3 align-items-center text-center text-md-start">
+        <div className="row g-3 align-items-start text-center text-lg-start">
           {loading ? <Loading /> : showProducts()}
         </div>
       </div>

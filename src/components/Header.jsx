@@ -1,12 +1,20 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
 
 const Header = () => {
+  const { cart } = useSelector((state) => state.cartState);
+  const navigate = useNavigate();
+
   return (
     <nav className="navbar navbar-expand-lg bg-white shadow-sm">
       <div className="container">
         <Link className="navbar-brand fw-bold fs-3 fst-italic" to="/">
-          logo
+          <img
+            src="assets/img/logo.png"
+            className="img-fluid"
+            style={{ height: "40px" }}
+          />
         </Link>
         <button
           className="navbar-toggler"
@@ -30,26 +38,21 @@ const Header = () => {
               </Link>
             </li>
             <li className="nav-item">
-              <Link className="nav-link" to="products">
+              <Link className="nav-link" to="/products">
                 Products
               </Link>
             </li>
-            <li className="nav-item">
-              <a className="nav-link" href="#">
-                About
-              </a>
-            </li>
-            <li className="nav-item">
-              <a className="nav-link" href="#">
-                Contact
-              </a>
-            </li>
           </ul>
           <div className="buttons mt-3 mt-lg-0">
-            <Link to="/cart" className="btn btn-outline-dark me-2">
-              <i className="fa fa-shopping-cart"></i> Cart (3)
+            <Link to="/cart" className="btn btn-outline-primary border-primary">
+              <i className="fa fa-shopping-cart"></i> Cart ({cart.length})
             </Link>
-            <button>Login</button>
+            <button
+              className="btn btn-outline-primary me-2 border-primary"
+              onClick={() => navigate("/login")}
+            >
+              Login
+            </button>
           </div>
         </div>
       </div>

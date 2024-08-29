@@ -1,4 +1,13 @@
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+
 function Navbar() {
+  const navigate = useNavigate();
+  const { admin } = useSelector((state) => state.adminState);
+  const handleLogout = () => {
+    document.cookie = "admin=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    navigate("/admin/login", { replace: true });
+  };
   return (
     <header className="TopHeader">
       <div className="right-section">
@@ -25,14 +34,14 @@ function Navbar() {
               aria-expanded="false"
             >
               <img src="/assets/img/user.png" />
-              <span>Username</span>
+              <span>{admin.name}</span>
             </button>
             <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton2">
-              <li>
-                <a className="dropdown-item" href="/Home/Logout">
+              <li style={{ cursor: "pointer" }} onClick={handleLogout}>
+                <span className="dropdown-item">
                   <img src="/assets/img/logout.png" />
                   تسجيل الخروج
-                </a>
+                </span>
               </li>
             </ul>
           </li>

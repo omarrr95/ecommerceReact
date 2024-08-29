@@ -6,7 +6,7 @@ export const baseUrl = "http://ecommerce-api.omar-work.website";
 export function handleUpload(image) {
   if (!image) return;
 
-  let time = 1000;
+  let time = 500;
   let progress = 0;
 
   document.querySelector(".progress-bar").style.width = 0 + "%";
@@ -72,6 +72,14 @@ export function fetchColors() {
   };
 }
 
+export function fetchProductImages() {
+  return (dispatch) => {
+    axios.get(`${baseUrl}/api/ProductImage`).then((res) => {
+      dispatch(all.setProductImages(res.data));
+    });
+  };
+}
+
 export function showData() {
   return (dispatch) => {
     dispatch(all.setLoading(true));
@@ -82,6 +90,8 @@ export function showData() {
       axios.get(`${baseUrl}/api/Product`),
       axios.get(`${baseUrl}/api/ProductUnit`),
       axios.get(`${baseUrl}/api/Colors`),
+      axios.get(`${baseUrl}/api/ProductImage`),
+      axios.get(`${baseUrl}/api/Admins`),
     ])
       .then((data) => {
         dispatch(all.setDepartments(data[0].data));
@@ -90,7 +100,37 @@ export function showData() {
         dispatch(all.setProducts(data[3].data));
         dispatch(all.setProductUnits(data[4].data));
         dispatch(all.setColors(data[5].data));
+        dispatch(all.setProductImages(data[6].data));
+        dispatch(all.setAdmins(data[7].data));
       })
       .finally(() => dispatch(all.setLoading(false)));
+  };
+}
+
+export function increaseQuantity({ product, cart }) {
+  return (dispatch) => {
+    let productFound = cart?.find((el) => el.id == product.id);
+    if (productFound) {
+      productFound.quantity += 1;
+      dispatch(all.setCart(cart));
+    } else {
+      dispatch(all.setCart([...cart, { ...product, quantity: 1 }]));
+    }
+  };
+}
+
+export function decreaseQuantity({ product, cart }) {
+  return (dispatch) => {
+    let productFound = cart?.find((el) => el.id == product.id);
+    if (productFound) {
+      if (productFound.quantity > 1) {
+        productFound.quantity -= 1;
+        dispatch(all.setCart(cart));
+        return;
+      }
+      if (productFound.quantity == 1) {
+        dispatch(all.setCart(cart.filter((el) => el.id != productFound.id)));
+      }
+    }
   };
 }

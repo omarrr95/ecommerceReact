@@ -15,40 +15,52 @@ function Sidebar() {
               <li>
                 <Link
                   className="Home-link sidebar-icon-img border-bottom"
-                  to="/department/index"
+                  to="/dashboard/department/index"
                 >
                   <img src="/assets/img/3d-house.png" />
                   <span>الاقسام</span>
                 </Link>
                 <ul className="no-style">
                   <li>
-                    <Link to="/category/index">
+                    <Link to="/dashboard/category/index">
                       <img src="/assets/img/banner.png" />
                       <span>الانواع</span>
                     </Link>
                   </li>
                   <li>
-                    <Link to="/brand/index">
+                    <Link to="/dashboard/brand/index">
                       <img src="/assets/img/user2.png" />
                       <span>الماركات</span>
                     </Link>
                   </li>
                   <li>
-                    <Link to="/product/index">
+                    <Link to="/dashboard/product/index">
                       <img src="/assets/img/about.png" />
                       <span>المنتجات</span>
                     </Link>
                   </li>
                   <li>
-                    <Link to="/productUnit/index">
+                    <Link to="/dashboard/productUnit/index">
                       <img src="/assets/img/customer.png" />
                       <span>الوحدات</span>
                     </Link>
                   </li>
                   <li>
-                    <Link to="/color/index">
+                    <Link to="/dashboard/color/index">
                       <img src="/assets/img/project.png" />
                       <span>الالوان</span>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/dashboard/productImage/index">
+                      <img src="/assets/img/subscribe.png" />
+                      <span>صور المنتج</span>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/dashboard/Admin/index">
+                      <img src="/assets/img/ui.png" />
+                      <span> المشرفين</span>
                     </Link>
                   </li>
                   {/* 

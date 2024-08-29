@@ -1,0 +1,114 @@
+.loginPage {
+  height: 100vh;
+}
+
+.imageSide {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #e1f2fc;
+
+  @media (max-width: 767px) {
+    display: none;
+  }
+}
+
+.imageSide img {
+  width: 550px;
+  max-width: 100%;
+}
+
+.formContainer {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgb(38, 38, 38);
+  background-color: #011f43;
+  max-width: 100%;
+}
+
+.form {
+  padding: 30px;
+  border-radius: 10px;
+  text-align: center;
+  width: 400px;
+  max-width: 100%;
+  background-color: rgb(38, 38, 38);
+  background-color: #011f43;
+  max-width: 100%;
+  direction: ltr;
+}
+
+.form h2 {
+  color: white;
+  letter-spacing: 1px;
+}
+
+.form .input-group {
+  margin: 50px 0;
+  position: relative;
+}
+
+.form .input-group input {
+  outline: none;
+  border: none;
+  padding: 15px 0;
+  width: 100%;
+  background-color: transparent;
+  border-bottom: 2px solid white;
+  caret-color: white;
+  font-size: 18px;
+  color: white;
+}
+
+.form .input-group input:focus {
+  border-color: lightblue;
+}
+
+.form .input-group label {
+  position: absolute;
+  left: 0;
+  top: 15px;
+  color: white;
+}
+
+.input-group label {
+  display: inline-block;
+  font-size: 18px;
+  min-width: 5px;
+  transition: 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.input-group input:focus+label,
+.input-group input:valid+label {
+  color: lightblue;
+  transform: translateY(-30px);
+}
+
+.form button {
+  border: none;
+  background-color: #009688;
+  color: white;
+  border-radius: 6px;
+  padding: 10px 20px;
+  width: 100%;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+button:active {
+  transform: scale(0.98);
+}
+
+.terms {
+  color: white;
+}
+
+.form .terms a {
+  text-decoration: none;
+  color: #009688;
+}

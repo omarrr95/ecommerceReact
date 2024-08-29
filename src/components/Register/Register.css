@@ -1,0 +1,330 @@
+.register {
+  padding: 15px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 70px);
+  user-select: none;
+  background-color: #e1f2fc;
+  direction: ltr;
+}
+
+.register .container {
+  width: 800px;
+  max-width: 100%;
+  min-height: 510px;
+  border-radius: 10px;
+  background-color: var(--white-color);
+  position: relative;
+  overflow: hidden;
+}
+
+.register :is(.sign-up, .sign-in) {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 50%;
+  height: 100%;
+  transition: 0.5s ease-in-out;
+}
+
+.register .sign-up {
+  opacity: 0;
+  z-index: 1;
+  scale: 0;
+}
+
+.register .sign-in {
+  z-index: 2;
+}
+
+.register form {
+  background-color: var(--white-color);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  padding: 0 20px;
+  border-radius: 6px;
+}
+
+.register .sign-in form {
+  padding: 40px !important;
+}
+
+.register form .route {
+  margin: 0 !important;
+  display: none;
+}
+
+.register form .route span {
+  cursor: pointer;
+  color: var(--main-color);
+}
+
+.register h1 {
+  color: var(--main-color);
+  margin-top: 15px;
+}
+
+.register p {
+  font-size: 14px;
+  margin: 15px 0 10px;
+  font-size: 16px;
+  color: #777;
+}
+
+.register input {
+  padding: 8px;
+  background-color: #eee;
+  color: var(--black-color);
+  border-radius: 6px;
+  display: block;
+  width: 100%;
+  margin: 8px 0;
+  border: 1px solid transparent;
+  transition: 0.3s;
+}
+
+.register .password-group input {
+  padding-right: 25px;
+}
+
+.register .password-group .password-eye {
+  position: absolute;
+  top: 50%;
+  right: 7px;
+  transform: translateY(-50%);
+  cursor: pointer;
+}
+
+.register :is(label[for="profileImg"], select) {
+  margin: 8px 0 !important;
+  background-color: #eee;
+  color: var(--black-color);
+  cursor: pointer;
+}
+
+body.dark-mode .register :is(label[for="profileImg"], select) {
+  background-color: #19283f !important;
+  transition: 0.3s;
+}
+
+.register input:focus {
+  border: 1px solid var(--main-color);
+}
+
+.register button {
+  background-color: #ff5722;
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+  padding: 15px 40px;
+  border-radius: 10px;
+  letter-spacing: 1px;
+  cursor: pointer;
+  text-transform: uppercase;
+  margin: 10px 0;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.register button:hover {
+  padding: 15px 50px;
+}
+
+.register button:active {
+  transform: scale(0.95);
+}
+
+.register form button {
+  background-color: var(--main-color);
+}
+
+.register form button:disabled {
+  opacity: 0.5;
+  pointer-events: none;
+  cursor: no-drop;
+}
+
+.register span.forget {
+  color: #777;
+  font-size: 14px;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+
+.register .social-container {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.register .social-container .social {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid #eee;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: 0.5s;
+}
+
+.register .social-container .social:hover {
+  background-color: #3f51b5;
+  color: white;
+}
+
+.register .overlay-container {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 50%;
+  height: 100%;
+  background-color: #3f51b5;
+  background-color: var(--main-color);
+  overflow-x: hidden;
+  z-index: 99;
+  text-align: center;
+  transition: 0.5s ease-in-out;
+}
+
+.register .overlay-left,
+.register .overlay-right {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 30px;
+  transform: translateX(0);
+  transition: transform 0.5s ease-in-out;
+  transition: all 0.5s ease-in-out;
+}
+
+.register .overlay-left {
+  z-index: 99;
+  opacity: 0;
+  left: -200%;
+}
+
+.register .overlay-right {
+  z-index: 100;
+  right: 0;
+}
+
+.register .overlay-container p {
+  color: white;
+  font-size: 18px;
+}
+
+.register .overlay-container h1 {
+  color: white;
+}
+
+.register .container.right-active .overlay-container {
+  left: 0;
+}
+
+.register .container.right-active .overlay-left {
+  z-index: 100;
+  opacity: 1;
+  left: 0;
+}
+
+.register .container.right-active .overlay-right {
+  z-index: 99;
+  right: -200%;
+}
+
+.register .container.right-active :is(.sign-up, .sign-in) {
+  left: 50%;
+  scale: 0;
+}
+
+.register .container.right-active .sign-up {
+  opacity: 1;
+  z-index: 5;
+  scale: 1;
+}
+
+@media (max-width: 800px) {
+  /* .register .container {
+    width: 700px;
+  } */
+}
+
+@media (max-width: 730px) {
+  /* .register .container {
+    width: 600px;
+    width: 650px;
+  } */
+
+  .register :is(.sign-up, .sign-in) form {
+    padding: 0 15px;
+  }
+
+  .register :is(.sign-up, .sign-in) h1 {
+    font-size: 27px;
+  }
+
+  .register :is(.overlay-left, .overlay-right) {
+    padding: 20px;
+  }
+}
+
+@media (max-width: 629px) {
+  .register {
+    padding: 10px;
+    /* min-height: calc(100vh - 75px); */
+  }
+
+  .register .container {
+    width: 480px;
+    height: 530px;
+  }
+
+  .register :is(.sign-up, .sign-in) {
+    width: 100%;
+    left: 0 !important;
+  }
+
+  .register :is(.sign-up, .sign-in) form {
+    padding: 0 20px !important;
+  }
+
+  .register :is(.sign-up, .sign-in) h1 {
+    font-size: 27px;
+  }
+
+  .register .route {
+    display: block !important;
+  }
+
+  .register .overlay-container {
+    display: none;
+    width: 100%;
+    top: 100%;
+    left: 0;
+  }
+
+  .register :is(.overlay-left, .overlay-right) {
+    padding: 15px;
+  }
+}
+
+@media (max-width: 575px) {
+  .register .container.container.right-active {
+    height: 600px;
+  }
+  .register .container.container.right-active form {
+    justify-content: start;
+  }
+}
